@@ -749,15 +749,15 @@ Each router **floods** its Link-State Packets through the network. After receivi
 
 简答模板：
 
-```text
+
 Routing and forwarding are related but different network-layer processes.
 
-Routing is the process of deciding the paths that packets should take through the network. It has a more global view and uses routing algorithms, such as link-state routing, to compute routes and build forwarding tables.
+Routing is the process of **deciding** the paths that **packets** should take through the network. It has a more global view and uses routing algorithms, such as link-state routing  **uses LSPs to advertise local link information.**, to compute routes and build **forwarding** tables.
 
-Forwarding is the local action performed by a router when a packet arrives. The router looks up the destination IP address in its forwarding table, usually using longest prefix match, and sends the packet to the correct next hop.
+**Forwarding** is the **local** action performed by a **router** when a packet arrives. The **router** looks up the **destination IP** address in its forwarding table, usually using longest prefix match, and sends the **packet** to the correct next hop.
 
 In short, routing builds the table; forwarding uses the table.
-```
+
 
 评分关键词：
 
@@ -774,13 +774,13 @@ In short, routing builds the table; forwarding uses the table.
 
 简答模板：
 
-```text
-Baseband transmission sends the digital signal directly over the medium using signal levels or transitions to represent bits. Examples include NRZ, NRZI, Manchester encoding, and 4B/5B. It is common when the medium can carry the baseband signal directly.
+
+Baseband transmission sends the digital signal directly over the **medium** using **signal levels** or **transitions** to represent bits. Examples include **NRZ, NRZI, Manchester encoding, and 4B/5B**. It is common when the medium can carry the baseband signal directly.
 
 Passband modulation uses a carrier signal and modifies properties of that carrier to carry data. The carrier is an oscillating signal at a chosen frequency. The sender can vary amplitude, frequency, or phase. This is useful when baseband signals do not propagate well on a medium, such as wireless or some fibre/cable systems.
 
 The key difference is that baseband directly represents bits as signal changes, while passband first places the information onto a carrier signal.
-```
+
 
 可画图说明：
 
