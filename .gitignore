@@ -1,1 +1,15 @@
+# OS clutter
 **/.DS_Store
+Thumbs.db
+
+# Obsidian local state that should not churn in git
+.obsidian/cache/
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/graph.json
+
+# Plugin runtime data
+.obsidian/plugins/*/data.json
+
+# Obsidian trash
+.trash/
