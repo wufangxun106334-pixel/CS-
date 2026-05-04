@@ -1,0 +1,8 @@
+{
+  "interfaceFontFamily": "Inter",
+  "baseFontSize": 15,
+  "accentColor": "#180939",
+  "enabledCssSnippets": [
+    "mermaid-font"
+  ]
+}
