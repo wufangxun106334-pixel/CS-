@@ -15,7 +15,7 @@ tags: [COMP47350, Visualisation, Experiment_Design, Overfitting, Underfitting]
 ### 1.1 针对单个特征 (Univariate)
 - **连续型数值特征 (Continuous Features)**:
   - **Histogram (直方图)**: 用于查看数值的**分布形状 (Distribution shape)**。如：是否存在偏态 (Skewness)、是否存在长尾。
-  - **Boxplot (箱线图)**: 专门用于快速定位**异常值 (Outliers)** 和查看数据集中趋势 (Median, Q1, Q3)。任何落在 `Whiskers` (触须，即 $Q1 - 1.5 IQR$ 或 $Q3 + 1.5 IQR$) 之外的点都会被单独绘制出来，提示潜在异常。
+  - - **Boxplot（箱线图）**：常用于快速查看数据的中位数（Median）、上下四分位数（Q1、Q3）、离散程度以及潜在异常值（Outliers）。图中的**whiskers（触须）**表示落在异常值判定范围内的最远实际数据点；而用于判定异常值的**fence** 通常定义为 Q1 - 1.5 * IQR 和 Q3 + 1.5 * IQR。任何超出这个范围的点都会被单独绘制出来，提示潜在异常。
 - **类别型特征 (Categorical Features)**:
   - **Barplot (条形图)**: 用于展示各个类别 (Levels) 的**频数 (Frequency)**。可以直观发现是否存在数量极少的罕见类别 (Rare categories)。
 
@@ -98,9 +98,9 @@ Lecture12 强调的核心警示：
 > [!question] Q1: 为什么 OOB Score (袋外评估) 在随机森林中如此重要？
 > 答：因为在随机森林中构建每一棵树时，都使用了 Bootstrap 抽样，自带了"样本外数据 (Out-of-sample data)"。这就允许我们在**不进行额外 Cross-Validation 切分**的情况下，直接在训练阶段完成 Out-of-sample testing，既节省计算资源，又保证了评估的无偏性。
 
-OOB Score is important in Random Forest because each tree is trained on a bootstrap sample, so some training examples are left out for that tree. These left-out examples are called out-of-bag samples and can be used to test the tree on data it has not seen.
+OOB Score is important in **Random** Forest because each tree is trained on a **bootstrap** sample, so **some** training examples are left **out** for that **tree**. These left-out examples are called **out-of-bag** samples and can be used **to test the tree on data it has not seen**.
 
-This gives an internal estimate of model performance without needing a separate validation set or extra cross-validation. It is useful because it gives a more realistic measure than training accuracy and helps estimate how well the random forest generalizes to unseen data.
+This gives an **internal** **estimate** of model **performance** without needing a separate **validation** set or **extra cross-validation**. It is useful because it gives a more **realistic** measure than training **accuracy** and helps estimate how well the random forest generalizes to unseen data.
 
 > [!question] Q2: 为什么在小样本数据上，单次 Train/Test Split 不可靠？
 > 答：小样本下测试集非常小（如 10 条数据中仅 3 条），评估结果高度依赖于这小部分数据的随机组成。单次切分可能"运气好"或"运气差"，产生误导性结论。应使用 Cross-Validation 取多次评估的均值。

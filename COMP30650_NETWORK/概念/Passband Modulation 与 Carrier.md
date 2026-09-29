@@ -60,7 +60,7 @@ s(t) = A cos(2πft + φ)
 
 `NRZ`、`NRZI`、`Manchester` 都属于 `baseband line coding`。它们不是 passband modulation，但经常和 passband 一起在物理层考。
 
-### 4.1 [[NRZ ]]
+### 4.1 NRZ
 
 `NRZ (Non-Return to Zero)`：
 
@@ -140,7 +140,8 @@ Bit 5 = 0 -> no transition
 不同教材可能把 `0/1` 方向写反，考试时先声明采用的定义即可。
 
 过程图：
-![[Pasted image 20260427152633.png]]
+> [!warning] 原图缺失
+> `Pasted image 20260427152633.png` 未随笔记同步，此图内容已丢失。
 
 
 

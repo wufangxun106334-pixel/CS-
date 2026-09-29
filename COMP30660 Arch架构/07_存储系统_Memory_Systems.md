@@ -32,30 +32,35 @@ Physics                --> 电子 (electrons)
 
 **解决方案：存储层次结构 (Memory Hierarchy)**
 
-> Memory hierarchy is the organisation of hardware memory units in levels, where faster, smaller, and more expensive memory is placed closer to the CPU, and slower, larger, and cheaper memory is placed farther away.
+> Memory hierarchy is the organisation of **hardware** memory units in **levels**, where faster, smaller, and more expensive memory is placed **closer** to the **CPU**, and slower, larger, and cheaper memory is placed farther away.
 
 ### 2.2 存储层次图
 
 ```mermaid
-graph TD
-    subgraph "离CPU近 / 速度快 / 容量小 / 成本高"
-        R["Registers<br/>寄存器<br/>< 1 ns<br/>~ 1 KB"]
+graph LR
+    subgraph A["Closer to CPU / Faster / Smaller / Higher Cost"]
+        direction LR
+        R["Registers<br/>寄存器<br/>&lt; 1 ns<br/>~ 1 KB"]
         C["Cache (SRAM)<br/>高速缓存<br/>1-10 ns<br/>32 KB - 64 MB"]
         M["Main Memory (DRAM)<br/>主存<br/>50-100 ns<br/>4-64 GB"]
     end
-    subgraph "离CPU远 / 速度慢 / 容量大 / 成本低"
+
+    subgraph B["Farther from CPU / Slower / Larger / Lower Cost"]
+        direction LR
         V["Virtual Memory / Secondary Storage<br/>虚拟内存 / 辅助存储 (SSD, HDD)<br/>10-100 μs (SSD) / 5-10 ms (HDD)<br/>256 GB - 4+ TB"]
     end
+
     R --> C --> M --> V
+
 ```
 
 ### 2.3 各级特征对比
 
-| 层次 | 英文 | 技术 | 特性 | 容量 | 速度 | 成本 |
-|------|------|------|------|------|------|------|
-| Cache | 高速缓存 | SRAM | 小、快、昂贵 | KB-MB级 | 1-10 CPU cycles | 极高 |
-| Main Memory | 主存 | DRAM | 大、较快、中等成本 | GB级 | 50-100 CPU cycles | 中等 |
-| Virtual Memory | 虚拟内存 | SSD / HDD | 超大、慢、廉价 | TB级 | 10μs-10ms | 低 |
+| 层次             | 英文   | 技术        | 特性        | 容量     | 速度                | 成本  |
+| -------------- | ---- | --------- | --------- | ------ | ----------------- | --- |
+| Cache          | 高速缓存 | SRAM      | 小、快、昂贵    | KB-MB级 | 1-10 CPU cycles   | 极高  |
+| Main Memory    | 主存   | DRAM      | 大、较快、中等成本 | GB级    | 50-100 CPU cycles | 中等  |
+| Virtual Memory | 虚拟内存 | SSD / HDD | 超大、慢、廉价   | TB级    | 10μs-10ms         | 低   |
 
 ```mermaid
 graph LR
@@ -77,18 +82,18 @@ graph LR
 
 ### 3.1 SRAM vs DRAM vs SSD vs HDD
 
-| 特性 | SRAM | DRAM | SSD | HDD |
-|------|------|------|-----|-----|
-| **全称** | Static Random Access Memory | Dynamic Random Access Memory | Solid-State Drive | Hard Disk Drive |
-| **存储单元** | Flip-Flop (触发器, 6个晶体管) | Capacitor-Transistor (电容+晶体管, 1个) | NAND Flash memory cells | Magnetic rotating platters |
-| **是否易失 (Volatile)** | 是 (Volatile) | 是 (Volatile) | 否 (Non-volatile) | 否 (Non-volatile) |
-| **是否需要刷新** | 不需要 (No refresh needed) | 需要周期性刷新 (Periodic refresh required) | 不需要 | 不需要 |
-| **速度** | 快 (1-10 ns) | 中等 (50-100 ns) | 慢 (10-100 μs) | 很慢 (5-10 ms) |
-| **密度 / 容量** | 低 (lower density) | 高 (higher density) | 高 | 高 |
-| **成本/bit** | 高 | 中 | 低 | 很低 |
-| **机械部件** | 无 (纯电子) | 无 (纯电子) | 无 (纯电子, pure electronics) | 有 (机械臂+旋转磁盘) |
-| **用途** | Cache (L1, L2, L3) | Main Memory (主内存) | 固态硬盘存储 | 传统硬盘存储 |
-
+| 特性                  | SRAM                        | DRAM                                | SSD                       | HDD                        |
+| ------------------- | --------------------------- | ----------------------------------- | ------------------------- | -------------------------- |
+| **全称**              | Static Random Access Memory | Dynamic Random Access Memory        | Solid-State Drive         | Hard Disk Drive            |
+| **存储单元**            | Flip-Flop (触发器, 6个晶体管)      | Capacitor-Transistor (电容+晶体管, 1个)   | NAND Flash memory cells   | Magnetic rotating platters |
+| **是否易失 (Volatile)** | 是 (Volatile)                | 是 (Volatile)                        | 否 (Non-volatile)          | 否 (Non-volatile)           |
+| **是否需要刷新**          | 不需要 (No refresh needed)     | 需要周期性刷新 (Periodic refresh required) | 不需要                       | 不需要                        |
+| **速度**              | 快 (1-10 ns)                 | 中等 (50-100 ns)                      | 慢 (10-100 μs)             | 很慢 (5-10 ms)               |
+| **密度 / 容量**         | 低 (lower density)           | 高 (higher density)                  | 高                         | 高                          |
+| **成本/bit**          | 高                           | 中                                   | 低                         | 很低                         |
+| **机械部件**            | 无 (纯电子)                     | 无 (纯电子)                             | 无 (纯电子, pure electronics) | 有 (机械臂+旋转磁盘)               |
+| **用途**              | Cache (L1, L2, L3)          | Main Memory (主内存)                   | 固态硬盘存储                    | 传统硬盘存储                     |
+**SRAM** stores each bit using a latch made of multiple transistors, so it is fast, does not need refreshing, and is commonly used in cache. **DRAM** stores each bit using one transistor and one capacitor, so it has higher density and lower cost, but it is slower and must be refreshed periodically.
 ### 3.2 易失性 vs 非易失性
 
 ```
@@ -98,13 +103,13 @@ Storage (存储)   --> Non-volatile (非易失性): 断电后数据保留
 
 ### 3.3 其他存储技术
 
-| 类型 | 全称 | 特性 |
-|------|------|------|
-| ROM | Read-Only Memory | 只读，出厂时写入，不可改写 |
-| PROM | Programmable ROM | 用户可编程一次 (一次性写入) |
-| EPROM | Erasable Programmable ROM | 可用紫外光擦除后重新编程 |
-| EEPROM | Electrically Erasable PROM | 可用电信号擦除和重新编程 |
-| Flash | Flash Memory | 基于EEPROM，块级擦除，SSD和USB驱动的基础 |
+| 类型     | 全称                         | 特性                         |
+| ------ | -------------------------- | -------------------------- |
+| ROM    | Read-Only Memory           | 只读，出厂时写入，不可改写              |
+| PROM   | Programmable ROM           | 用户可编程一次 (一次性写入)            |
+| EPROM  | Erasable Programmable ROM  | 可用紫外光擦除后重新编程               |
+| EEPROM | Electrically Erasable PROM | 可用电信号擦除和重新编程               |
+| Flash  | Flash Memory               | 基于EEPROM，块级擦除，SSD和USB驱动的基础 |
 
 ---
 
@@ -159,7 +164,7 @@ graph TD
 
 **Cache 的目标 (Purpose)**: 减少CPU读写内存所需的时间。
 
-#### 读取流程 (Read from Memory)
+******#### 读取流程 (Read from Memory)
 
 ```mermaid
 flowchart TD
@@ -183,19 +188,19 @@ flowchart TD
 
 当CPU写入的地址**已在cache中** (write hit)：
 
-| 策略 | 英文 | 行为 | 优点 | 缺点 |
-|------|------|------|------|------|
-| **写穿透** | Write-through | 数据同时写入 Cache 和 Main Memory | 实现简单，主存始终是最新的 (up-to-date) | 产生大量内存流量 (memory traffic) |
-| **写回** | Write-back | 数据只写入 Cache，标记为 dirty。当该数据被替换(evicted)时，才写回主存 | 通常性能更好 | 实现更复杂 |
+| 策略      | 英文            | 行为                                            | 优点                         | 缺点                        |
+| ------- | ------------- | --------------------------------------------- | -------------------------- | ------------------------- |
+| **写穿透** | Write-through | 数据同时写入 Cache 和 Main Memory                    | 实现简单，主存始终是最新的 (up-to-date) | 产生大量内存流量 (memory traffic) |
+| **写回**  | Write-back    | 数据只写入 Cache，标记为 dirty。当该数据被替换(evicted)时，才写回主存 | 通常性能更好                     | 实现更复杂                     |
 
 #### 5.2.2 Write Miss 策略 (写缺失)
 
 当CPU写入的地址**不在cache中** (write miss)：
 
-| 策略 | 英文 | 行为 | 通常搭配 |
-|------|------|------|----------|
-| **不写分配** | No-write-allocate | 不将数据带入cache，直接在main memory中更新 | Write-through |
-| **写分配** | Write-allocate | 先将block复制到cache，然后在cache中更新word | Write-back |
+| 策略       | 英文                | 行为                              | 通常搭配          |
+| -------- | ----------------- | ------------------------------- | ------------- |
+| **不写分配** | No-write-allocate | 不将数据带入cache，直接在main memory中更新   | Write-through |
+| **写分配**  | Write-allocate    | 先将block复制到cache，然后在cache中更新word | Write-back    |
 
 #### 5.2.3 写策略流程对比图
 
@@ -266,11 +271,11 @@ flowchart TD
 
 **Cache 术语 (Cache Jargon):**
 
-| 术语 | 英文 | 定义 |
-|------|------|------|
+| 术语  | 英文           | 定义                                                   |
+| --- | ------------ | ---------------------------------------------------- |
 | 行/线 | Line (Block) | 可在cache和main memory间传输的最小数据单元 (这里: 1 word = 4 bytes) |
-| 组 | Set | 共享相同index的一组line (这里: 2 bits = 4 sets) |
-| 路 | Ways | 每个set中的line数量 (这里: 2 ways) |
+| 组   | Set          | 共享相同index的一组line (这里: 2 bits = 4 sets)               |
+| 路   | Ways         | 每个set中的line数量 (这里: 2 ways)                           |
 
 **Cache 结构图:**
 
@@ -299,6 +304,8 @@ Bit:  31 ...... 4   3  2    1  0
       [    Tag    ][ Set ][ Offset ]
       28 bits      2 bits   2 bits
 ```
+![[最后给你一个万能做题模板.png]]
+A 2-way set-associative cache is divided into two **ways** so that each memory **block** can be placed in one of two **locations** within the same set. The address is split into Tag, Index, and Offset. The **Index** selects the **set**, and the **Tag** is compared in both ways to find a **hit**(**Valid = 1 and Tag matches). This design reduces conflict misses compared with a direct-mapped cache, while being simpler and cheaper than a fully associative cache.
 
 | 字段 | 英文 | 位数 | 作用 |
 |------|------|------|------|
@@ -457,14 +464,21 @@ graph TD
         B1 --> C1["1个比较器"]
         C1 --> D1["优点: 简单, 快速, 硬件少<br/>缺点: 冲突缺失多 (conflict miss)<br/>每个地址只有一个可能位置"]
     end
+```
 
+```mermaid
     subgraph "Set-Associative Cache 组相联映射"
         direction LR
         A2["Block 地址"] --> B2["Set 中有 N 个位置<br/>(N Ways)"]
         B2 --> C2["N 个并行比较器"]
         C2 --> D2["优点: 冲突缺失少, 灵活性高<br/>缺点: 硬件复杂, 需要 N 个比较器<br/>最常用类型"]
     end
+```
 
+
+
+
+```mermaid
     subgraph "Fully-Associative Cache 全相联映射"
         direction LR
         A3["Block 地址"] --> B3["可以放在任意位置"]
@@ -536,13 +550,8 @@ AMAT = T_L1 + M_L1 * [T_L2 + M_L2 * T_main]
 
 其中 `M_L1` 是L1的缺失率，`M_L2` 是L2的缺失率 (注意: 这里的M_L2是L1 miss后L2的局部缺失率)。
 
-#### 5.11.4 三种 Cache Miss 类型
 
-| 类型 | 英文 | 原因 | 解决方法 |
-|------|------|------|----------|
-| **强制缺失** | Compulsory / Cold Miss | 第一次访问该block (cache为空) | 增大block size (prefetching) |
-| **容量缺失** | Capacity Miss | Cache容量不够容纳所有需要的block | 增大cache容量 |
-| **冲突缺失** | Conflict Miss | 多个block映射到同一个set (direct-mapped尤为严重) | 增加associativity (way数) |
+
 
 ---
 
@@ -579,7 +588,7 @@ flowchart TD
     Hit --> Done(["完成"])
     Transfer --> Done
 ```
-
+When a **CPU** **access** is not in the **cache**, the **OS** checks whether the required **page** is already in main **memory**. If it is, the word is copied from main **memory** to the **CPU** and **cache**. If not, a **page fault** occurs. The OS then loads the page from **storage** into a **free** **frame** if one is available. If **memory** is full, it selects a **victim** page using a page **replacement** policy. If the victim page is **dirty**, it must be **written back** to **storage** before the frame is reused. Finally, the required **page** is loaded into **memory**, and the word is transferred to the **CPU and cache**.
 ### 6.3 Page Table (页表)
 
 #### 6.3.1 地址结构
@@ -618,19 +627,20 @@ flowchart LR
     PT --> PA_PFN
     VA_OFF --> PA_OFF
 ```
-
+  
+The CPU first uses the **virtual page number**(VPN) to search the TLB. If the TLB **entry** is found and the **valid** bit is set, it is a TLB **hit**, and the page **frame** **number** is **obtained** immediately to form the **physical** **address**. If the entry is not found, it is a TLB **miss**, so the page table must be accessed in **main memory** to get the frame number. If the page is **not** in memory, a **page fault** occurs and the page must be loaded from **storage**.
 #### 6.3.3 Page Table 结构
 
 Page Table 的每一行 (row) 对应一个VPN (即一个Page)，包含以下信息：
 
-| 字段 | 英文 | 说明 |
-|------|------|------|
-| VPN | Virtual Page Number | 行索引，标识虚拟页面 |
-| Valid bit | 有效位 | 1 = Page在Main Memory中; 0 = Page不在 (在storage中) |
-| PFN | Physical Frame Number | Page在Main Memory中的物理帧位置 |
-| Protection | 保护位 | 指示page的读写权限 (r=读, w=写, rw=读写) |
-| Dirty bit | 脏位 | 1 = Page加载后被修改过; 0 = 未被修改 |
-| Reference | 引用位 | 用于替换策略的信息 (e.g. 最近是否被访问) |
+| 字段         | 英文                    | 说明                                            |
+| ---------- | --------------------- | --------------------------------------------- |
+| VPN        | Virtual Page Number   | 行索引，标识虚拟页面                                    |
+| Valid bit  | 有效位                   | 1 = Page在Main Memory中; 0 = Page不在 (在storage中) |
+| PFN        | Physical Frame Number | Page在Main Memory中的物理帧位置                       |
+| Protection | 保护位                   | 指示page的读写权限 (r=读, w=写, rw=读写)                 |
+| Dirty bit  | 脏位                    | 1 = Page加载后被修改过; 0 = 未被修改                     |
+| Reference  | 引用位                   | 用于替换策略的信息 (e.g. 最近是否被访问)                      |
 
 **Page Table 示例:**
 
@@ -795,78 +805,78 @@ flowchart TD
 
 ### 7.2 Direct-mapped vs Set-associative vs Fully-associative Cache
 
-| 特性 | Direct-mapped (直接映射) | Set-associative (组相联) | Fully-associative (全相联) |
-|------|--------------------------|--------------------------|----------------------------|
-| Block放置位置 | 1个固定位置 (唯一) | N个位置 (Set内的Way) | 任意位置 |
-| 比较器数量 | 1 | N | 所有cache line数 |
-| 硬件复杂度 | 低 | 中 | 高 |
-| 冲突缺失 (Conflict Miss) | 高 | 低 | 0 |
-| 搜索速度 | 最快 | 较快 | 较慢 |
-| 命中率 | 最低 | 较高 | 最高 |
-| 实际应用 | 早期设计/L1 | **最常用** (L1/L2/L3) | 小容量TLB |
-| 索引方式 | 仅通过Index定位 | Index定位Set, Tag识别Way | Tag识别所有 |
+| 特性                   | Direct-mapped (直接映射) | Set-associative (组相联) | Fully-associative (全相联) |
+| -------------------- | -------------------- | --------------------- | ----------------------- |
+| Block放置位置            | 1个固定位置 (唯一)          | N个位置 (Set内的Way)       | 任意位置                    |
+| 比较器数量                | 1                    | N                     | 所有cache line数           |
+| 硬件复杂度                | 低                    | 中                     | 高                       |
+| 冲突缺失 (Conflict Miss) | 高                    | 低                     | 0                       |
+| 搜索速度                 | 最快                   | 较快                    | 较慢                      |
+| 命中率                  | 最低                   | 较高                    | 最高                      |
+| 实际应用                 | 早期设计/L1              | **最常用** (L1/L2/L3)    | 小容量TLB                  |
+| 索引方式                 | 仅通过Index定位           | Index定位Set, Tag识别Way  | Tag识别所有                 |
 
 ### 7.3 Write-through vs Write-back
 
-| 特性 | Write-through (写穿透) | Write-back (写回) |
-|------|------------------------|-------------------|
-| 写入目标 | Cache + Main Memory (同时) | 仅写入 Cache |
-| Main Memory一致性 | 始终最新 (always up-to-date) | 可能不一致 (stale) |
-| 写入流量 | **高** (每次write都访问memory) | **低** (仅evict dirty时访问memory) |
-| 实现复杂度 | **简单** | 复杂 (需要Dirty bit) |
-| 性能 | 通常较差 (受memory bandwidth限制) | **通常更好** (write buffering) |
-| Write miss搭配 | 通常与 No-write-allocate 搭配 | 通常与 Write-allocate 搭配 |
-| Dirty bit | 不需要 | **需要** |
+| 特性             | Write-through (写穿透)        | Write-back (写回)               |
+| -------------- | -------------------------- | ----------------------------- |
+| 写入目标           | Cache + Main Memory (同时)   | 仅写入 Cache                     |
+| Main Memory一致性 | 始终最新 (always up-to-date)   | 可能不一致 (stale)                 |
+| 写入流量           | **高** (每次write都访问memory)   | **低** (仅evict dirty时访问memory) |
+| 实现复杂度          | **简单**                     | 复杂 (需要Dirty bit)              |
+| 性能             | 通常较差 (受memory bandwidth限制) | **通常更好** (write buffering)    |
+| Write miss搭配   | 通常与 No-write-allocate 搭配   | 通常与 Write-allocate 搭配         |
+| Dirty bit      | 不需要                        | **需要**                        |
 
 ### 7.4 Write-allocate vs No-write-allocate
 
-| 特性 | Write-allocate (写分配) | No-write-allocate (不写分配) |
-|------|--------------------------|------------------------------|
+| 特性           | Write-allocate (写分配)            | No-write-allocate (不写分配)      |
+| ------------ | ------------------------------- | ----------------------------- |
 | Write miss行为 | 将block先load进cache，再在cache中write | 直接在main memory中write，不载入cache |
-| 后续访问 | Cache中有该block，后续read可能hit | Cache中无该block，后续read一定miss |
-| 搭配策略 | **Write-back** | **Write-through** |
-| 性能 | 后续读访问快 (利用了temporal locality) | 简单但可能牺牲后续读性能 |
+| 后续访问         | Cache中有该block，后续read可能hit       | Cache中无该block，后续read一定miss    |
+| 搭配策略         | **Write-back**                  | **Write-through**             |
+| 性能           | 后续读访问快 (利用了temporal locality)   | 简单但可能牺牲后续读性能                  |
 
 ### 7.5 Virtual Address vs Physical Address
 
-| 特性 | Virtual Address (虚拟地址) | Physical Address (物理地址) |
-|------|----------------------------|------------------------------|
-| 使用者 | CPU (程序看到的是虚拟地址) | Memory System (内存控制器) |
-| 地址空间大小 | 可以很大 (由ISA决定, e.g. 2^64) | 由实际安装的RAM容量决定 (较小) |
-| 连续性 | 程序看到的连续地址 | 实际物理上可能不连续 (分散在不同frame) |
-| 隔离性 | 每个进程有独立的虚拟地址空间 | 所有进程共享物理内存 |
-| 转换 | 需要通过Page Table/TLB转换为物理地址 | 直接用于访问内存芯片 |
-
+| 特性     | Virtual Address (虚拟地址)    | Physical Address (物理地址) |
+| ------ | ------------------------- | ----------------------- |
+| 使用者    | CPU (程序看到的是虚拟地址)          | Memory System (内存控制器)   |
+| 地址空间大小 | 可以很大 (由ISA决定, e.g. 2^64)  | 由实际安装的RAM容量决定 (较小)      |
+| 连续性    | 程序看到的连续地址                 | 实际物理上可能不连续 (分散在不同frame) |
+| 隔离性    | 每个进程有独立的虚拟地址空间            | 所有进程共享物理内存              |
+| 转换     | 需要通过Page Table/TLB转换为物理地址 | 直接用于访问内存芯片              |
+Virtual addresses are used to provide each process with an independent, contiguous logical address space. The program does not need contiguous physical memory because the OS and MMU translate virtual addresses to scattered physical frames.
 ### 7.6 TLB vs Page Table
 
-| 特性 | TLB (Translation Lookaside Buffer) | Page Table (页表) |
-|------|------------------------------------|-------------------|
-| 本质 | **Cache** of the Page Table | **完整的** VPN->PFN 映射表 |
-| 位置 | On-chip (在CPU芯片内) | Main Memory (在内存中) |
-| 容量 | 很小 (几十到几百个条目) | 很大 (覆盖整个虚拟地址空间) |
-| 速度 | 极快 | 慢 (需要访问main memory) |
-| 内容 | 最近使用的page mappings (subset) | 所有页面的映射 |
-| 组织 | 通常全相联 (fully-associative) | 多级页表 (hierarchical) |
-| 命中时 | 直接获取PFN (address translation done) | N/A |
-| 缺失时 | 需要访问内存中的Page Table | N/A (由OS处理page fault) |
+| 特性  | TLB (Translation Lookaside Buffer) | Page Table (页表)       |
+| --- | ---------------------------------- | --------------------- |
+| 本质  | **Cache** of the Page Table        | **完整的** VPN->PFN 映射表  |
+| 位置  | On-chip (在CPU芯片内)                  | Main Memory (在内存中)    |
+| 容量  | 很小 (几十到几百个条目)                      | 很大 (覆盖整个虚拟地址空间)       |
+| 速度  | 极快                                 | 慢 (需要访问main memory)   |
+| 内容  | 最近使用的page mappings (subset)        | 所有页面的映射               |
+| 组织  | 通常全相联 (fully-associative)          | 多级页表 (hierarchical)   |
+| 命中时 | 直接获取PFN (address translation done) | N/A                   |
+| 缺失时 | 需要访问内存中的Page Table                 | N/A (由OS处理page fault) |
 
 ### 7.7 Volatile vs Non-volatile Memory
 
-| 特性 | Volatile (易失性) | Non-volatile (非易失性) |
-|------|-------------------|--------------------------|
-| 断电后数据 | **丢失** (lost) | **保留** (retained) |
-| 典型技术 | SRAM, DRAM | SSD (NAND Flash), HDD (磁性), ROM, EEPROM |
-| 分类 | Memory (内存/主存) | Storage (存储/外存) |
-| 速度 | 快 | 慢 |
+| 特性    | Volatile (易失性) | Non-volatile (非易失性)                     |
+| ----- | -------------- | --------------------------------------- |
+| 断电后数据 | **丢失** (lost)  | **保留** (retained)                       |
+| 典型技术  | SRAM, DRAM     | SSD (NAND Flash), HDD (磁性), ROM, EEPROM |
+| 分类    | Memory (内存/主存) | Storage (存储/外存)                         |
+| 速度    | 快              | 慢                                       |
 
 ### 7.8 Temporal vs Spatial Locality
 
-| 特性 | Temporal Locality (时间局部性) | Spatial Locality (空间局部性) |
-|------|-------------------------------|-------------------------------|
-| 定义 | 最近访问过的地址很可能再次被访问 | 刚访问地址附近的地址很可能被访问 |
-| 例子 | 循环中的变量被反复读写 | 数组顺序遍历; 字符串逐字符读取 |
-| Cache利用 | 将最近访问的数据保留在cache中 | 将包含被访问地址的整个block加载到cache |
-| 失效情况 | 程序一次性处理大量数据 (如streaming) | 随机内存访问 (如linked list traversal) |
+| 特性      | Temporal Locality (时间局部性)                           | Spatial Locality (空间局部性)                                                            |
+| ------- | --------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 定义      | 最近访问过的地址很可能再次被访问                                    | 刚访问地址附近的地址很可能被访问                                                                    |
+| 例子      | Variables in a loop are repeatedly read and written | Iterating through an array sequentially; reading a string character by character \| |
+| Cache利用 | 将最近访问的数据保留在cache中                                   | 将包含被访问地址的整个block加载到cache                                                            |
+| 失效情况    | 程序一次性处理大量数据 (如streaming)                            | 随机内存访问 (如linked list traversal)                                                     |
 
 ---
 
@@ -945,19 +955,19 @@ Page Table Size = Number_of_VPNs * Size_of_each_PTE
 
 ### 8.5 考试必记
 
-| 概念 | 关键点 |
-|------|--------|
-| **Memory Hierarchy 设计目标** | 平衡 速度(speed) - 容量(capacity) - 成本(cost) |
-| **Cache 为什么有效** | Temporal Locality + Spatial Locality |
-| **最常用的 Cache 类型** | N-way Set-associative |
-| **LRU 替换策略** | 通常性能最佳 |
-| **Write-back 搭配** | Write-allocate (最常见组合) |
-| **Write-through 搭配** | No-write-allocate |
-| **Virtual Memory 的目的** | 让CPU以为有更多主存 (illusion of larger memory) |
-| **Page Offset** | 在虚拟地址转物理地址过程中**不变** |
-| **TLB** | Page Table 的 Cache |
-| **Page Fault** | 所需Page不在物理内存中，需要从storage加载 |
-| **Dirty bit 的作用** | 指示Page是否被修改过; evict时需要写回storage |
+| 概念                        | 关键点                                     | reason                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Memory Hierarchy 设计目标** | 平衡 速度(speed) - 容量(capacity) - 成本(cost)  |                                                                                                                                                                                                                                                                                                                                                                            |
+| **Cache 为什么有效**           | Temporal Locality + Spatial Locality    |                                                                                                                                                                                                                                                                                                                                                                            |
+| **最常用的 Cache 类型**         | N-way Set-associative                   |                                                                                                                                                                                                                                                                                                                                                                            |
+| **LRU 替换策略**              | 通常性能最佳                                  |                                                                                                                                                                                                                                                                                                                                                                            |
+| **Write-back 搭配**         | Write-allocate (最常见组合)                  | Write-back is usually paired with write-allocate because once the **block** is brought into **cache**, multiple **writes** can be handled in cache and only written back later on eviction, which reduces memory traffic.                                                                                                                                                  |
+| **Write-through 搭配**      | No-write-allocate                       | With **write-through**, every write is immediately sent to main memory. On a **write miss**, using **no-write-allocate** avoids first loading the block into **cache**, which would create extra memory **traffic** with little benefit. Therefore, write-through is commonly paired with **no-write-allocate** because it is simpler and more efficient for write misses. |
+| **Virtual Memory 的目的**    | 让CPU以为有更多主存 (illusion of larger memory) |                                                                                                                                                                                                                                                                                                                                                                            |
+| **Page Offset**           | 在虚拟地址转物理地址过程中**不变**                     |                                                                                                                                                                                                                                                                                                                                                                            |
+| **TLB**                   | Page Table 的 Cache                      |                                                                                                                                                                                                                                                                                                                                                                            |
+| **Page Fault**            | 所需Page不在物理内存中，需要从storage加载              |                                                                                                                                                                                                                                                                                                                                                                            |
+| **Dirty bit 的作用**         | 指示Page是否被修改过; evict时需要写回storage         | Indicates whether the page has been modified; must be written back to storage during eviction                                                                                                                                                                                                                                                                              |
 
 ---
 

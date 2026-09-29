@@ -128,7 +128,7 @@ z = (50 - 50) / 10 = 0
 
 > [!important] 注意
 > 标准化不是“抗异常值”的万能方法。极端值仍会拉动均值和标准差。若异常值很严重，可以考虑 log transform、clamping 或 RobustScaler。
-
+![[Pasted image 20260505003109.png]]
 ---
 
 ## 3. 正则化 (Regularization)
@@ -147,11 +147,12 @@ $$Loss = Error + Penalty$$
 
 ### 3.2 Ridge, Lasso, ElasticNet
 
-| 方法         | 惩罚项            | 系数效果           | 适用场景         |     |
-| :--------- | :------------- | :------------- | :----------- | --- |
-| Ridge      | L2, $\sum w^2$ | 缩小系数，通常不变成 0   | 特征相关、多数特征都有用 |     |
-| Lasso      | L1, $\sum      | 部分系数变 0，自动特征选择 | 高维稀疏数据       |     |
-| ElasticNet | L1 + L2        | 同时缩小和选择特征      | 高维数据且特征相关    |     |
+| 方法         | 惩罚项                  | 系数效果           | 适用场景         |     |
+| :--------- | :------------------- | :------------- | :----------- | --- |
+| Ridge      | L2, $Alpha*\sum w^2$ | 缩小系数，通常不变成 0   | 特征相关、多数特征都有用 |     |
+| Lasso      | L1, $Alpha*\sum w$   | 部分系数变 0，自动特征选择 | 高维稀疏数据       |     |
+| ElasticNet | L1 + L2              | 同时缩小和选择特征      | 高维数据且特征相关    |     |
+|            |                      |                |              |     |
 
 ### 3.3 参数含义
 
@@ -194,9 +195,9 @@ LogisticRegression(C=1.0)
 
 | 问题                        | 应该想到                                  |
 | :------------------------ | :------------------------------------ |
-| 想把输入压到 `[0,1]` 或 `[-1,1]` | 归一化                                   |
-| 想让输入均值为 0、标准差为 1          | 标准化                                   |
-| 想减少过拟合、限制系数变大             | 正则化                                   |
+| 想把输入压到 `[0,1]` 或 `[-1,1]` | 归一化 Normalization                     |
+| 想让输入均值为 0、标准差为 1          | 标准化Standardization                    |
+| 想减少过拟合、限制系数变大             | 正则化Regularization 需要配合标准化处理数据         |
 | 有明显异常值，Min-Max 会压扁正常数据    | 优先考虑标准化、log、clamping 或 robust scaling |
 | Ridge / Lasso 前需要公平惩罚系数   | 先标准化                                  |
 | 神经网络题目要求 symmetric inputs | 常用归一化到 `[-1,1]`                       |
@@ -255,15 +256,15 @@ Normalization 只能说是辅助训练稳定，不是主要防过拟合方法。
 
 ### 6.1 归一化
 
-> Min-Max normalization **linearly** scales values into a **fixed** **target** **range**, usually `[0,1]`. It preserves the relative order of values but is **sensitive** to **outliers** because the minimum and maximum determine the scaling.
+> Min-Max **normalization** **linearly** scales values into a **fixed** **target** **range**, usually `[0,1]`. It preserves the **relative** order of values but is **sensitive** to **outliers** because the **minimum** and **maximum** determine the **scaling**.
 
 ### 6.2 标准化
 
-> Z-score standardization transforms data by **subtracting** the mean and dividing by the standard deviation, so the transformed feature has **mean 0** and **standard deviation 1**. It is useful when features have different scales and is commonly used before linear models or regularized models.
+> Z-score standardization transforms data by **subtracting** the mean and dividing by the **standard** **deviation**, so the transformed feature has **mean 0** and **standard deviation 1**. It is useful when features have different scales and is commonly used before **linear models** or **regularized** models.
 
 ### 6.3 正则化
 
-> Regularization adds a penalty term to the loss function to discourage large coefficients and reduce overfitting. Ridge uses an L2 penalty, Lasso uses an L1 penalty and can set some coefficients to zero, while ElasticNet combines both.
+> **Regularization** adds a penalty term to the loss function to discourage large **coefficients** and reduce overfitting. Ridge uses an L2 penalty, Lasso uses an L1 penalty and can set some coefficients to zero, while ElasticNet combines both.
 
 ---
 

@@ -44,11 +44,11 @@ flowchart LR
 
 ## 5. 与课程其他卡片的关系
 
-- 网络层地址：[[概念/IP 与 MAC 地址]]
-- 本地映射：[[概念/ARP]]
-- 网络设备：[[概念/Router 与 Switch]]
-- 传输服务：[[概念/TCP、UDP 与 QUIC]]
-- 应用协议：[[概念/DNS、HTTP 与 HTTPS]]
+- 网络层地址：[[COMP30650_NETWORK/概念/IP 与 MAC 地址]]
+- 本地映射：[[COMP30650_NETWORK/概念/ARP]]
+- 网络设备：[[COMP30650_NETWORK/概念/Router 与 Switch]]
+- 传输服务：[[COMP30650_NETWORK/概念/TCP、UDP 与 QUIC]]
+- 应用协议：[[COMP30650_NETWORK/概念/DNS、HTTP 与 HTTPS]]
 
 ## 6. 易错点辨析
 

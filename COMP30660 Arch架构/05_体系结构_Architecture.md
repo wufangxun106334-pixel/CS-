@@ -67,12 +67,13 @@
 
 ### 2.1 低级语言 (Low-Level Languages)
 
-| 术语 | 定义 |
-|------|------|
-| **Machine Instructions** (机器指令) | 处理器可直接执行的二进制编码指令 |
-| **Assembly Instructions** (汇编指令) | 机器指令的人类可读助记符 (mnemonics) |
-| **Assembler** (汇编器) | 将 `.asm` 汇编源文件翻译为 `.obj` 目标文件的软件工具 |
-| **Linker** (链接器) | 将一个或多个 `.obj` 文件和库文件合并为单个可执行文件的软件工具 |
+| 术语                               | 定义                                                                                                                          |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Machine Instructions** (机器指令)  | 处理器可直接执行的二进制编码指令                                                                                                            |
+| **Assembly Instructions** (汇编指令) | 机器指令的人类可读助记符 (mnemonics)                                                                                                    |
+| **Assembler** (汇编器)              | is a software tool that translates a program written in assembly language(.asm) into machine language(.obj)                 |
+| **Linker** (链接器)                 | A **linker** is a software tool that combines one or more object files and library files into a single executable program." |
+
 
 **工具链流程:**
 
@@ -118,11 +119,11 @@ HLL 源文件 --> [Compiler] --> bytecode 文件 --> [Virtual Machine] 执行
 
 ### 2.3 RISC vs CISC
 
-| | CISC (Complex Instruction Set Computer) | RISC (Reduced Instruction Set Computer) |
-|--|------------------------------------------|------------------------------------------|
-| 特征 | 大型、复杂、不规则的指令集 | 小型、基本、规则的指令集 |
-| 例子 | x86, x86-64 | RISC-V, ARM, MIPS |
-| 性能 | 同代同尺寸 RISC 通常更快更低功耗 | 同代同尺寸 CISC 通常更慢更高功耗 |
+|     | CISC (Complex Instruction Set Computer) | RISC (Reduced Instruction Set Computer) |
+| --- | --------------------------------------- | --------------------------------------- |
+| 特征  | 大型、复杂、不规则的指令集                           | 小型、基本、规则的指令集                            |
+| 例子  | x86, x86-64                             | RISC-V, ARM, MIPS                       |
+| 性能  | 同代同尺寸 RISC 通常更快更低功耗                     | 同代同尺寸 CISC 通常更慢更高功耗                     |
 
 **关键事实**: 现代 CISC 处理器为保持软件兼容性支持 CISC 指令集，但内部会将复杂指令转换为 RISC-like 指令来执行。
 
@@ -161,13 +162,14 @@ HLL 源文件 --> [Compiler] --> bytecode 文件 --> [Virtual Machine] 执行
 
 ### 3.2 各部件功能
 
-| 部件 | 功能 |
-|------|------|
-| **PC (Program Counter)** | 保存当前正在执行的指令的地址 (32-bit)，指向指令最低字节地址 |
-| **Control Unit** (控制器) | 译码机器指令，生成控制信号驱动其他功能单元 |
-| **Register File** (寄存器文件) | 存储 CPU 当前正在操作的数据 (32 个 32-bit 寄存器) |
-| **ALU** (算术逻辑单元) | 对寄存器文件中的数据进行算术与逻辑操作 |
-| **Main Memory** (主存储器) | 存储指令和数据；按 32-bit word 组织，可按字节或按字访问 |
+| 部件                        | 功能                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------ |
+| **PC (Program Counter)**  | \|Stores the address of the currently executing instruction (32-bit),                      |
+| **Control Unit** (控制器)    | Decodes machine instructions and generates control signals to drive other functional units |
+| **Register File** (寄存器文件) | Stores the data currently being operated on by the CPU                                     |
+| **ALU** (算术逻辑单元)          | Performs arithmetic and logical operations on data from the register file\|                |
+| **Main Memory** (主存储器)    | Stores instructions and data; organized as 32-bit words and accessible by byte or word\|   |
+
 
 ### 3.3 Fetch-Decode-Execute 循环
 
@@ -557,7 +559,7 @@ PC        Memory       Assembly Instruction         Machine Instruction
 # if (a == b) c = c + 1;
 
 bne s0, s1, skip:     # 如果 s0 != s1 (a != b)，跳到 skip
-    addi s2, s2, 1    # c = c + 1
+    addi s2, s2, 1    # 如果 s0 == s1 (a != b)执行c = c + 1
 skip:
 ...
 ```
@@ -640,7 +642,7 @@ skip:
     addi s0, zero, 0       # 初始化: x = 0
     addi t0, zero, 3       # 退出条件: t0 = 3
 while:
-    beq s0, t0, done       # 等于时退出
+    beq s0, t0, done       # 等于时退出,先写返回值,类似递归逻辑
     addi s0, s0, 1         # 循环体: x = x + 1
     j    while             # 返回循环头
 done:
@@ -702,104 +704,13 @@ simple:
 # Called function:
 sum:
     add a0, a0, a1         # a0 = a0 + a1 (结果)
-    jalr x0, 0(ra)         # 返回
+    jalr x0, 0(ra)         # 返回 固定写法
 ```
 
 **参数/返回值约定**:
 - `a0` - `a7` 用于向函数传递参数
 - `a0` 也用于从被调函数向调函数传递返回值
 - `a0` - `a1` 同时可作为返回值寄存器
-
-### 8.6 保存寄存器与栈帧
-
-**寄存器保存约定**:
-
-| Preserved (需恢复) | Non-preserved (可破坏) |
-|---------------------|------------------------|
-| Saved registers: s0-s11 | Temporary registers: t0-t6 |
-| Stack pointer: sp | Argument registers: a0-a7 |
-| | Return address: ra |
-
-**约定**: 子程序在返回前必须将所有 preserved registers 恢复为原值。Non-preserved registers 不需要恢复。
-
-#### 栈帧 (Stack Frame)
-
-**Stack** (栈) 是按 LIFO (Last-In, First-Out) 组织的特殊内存区域。
-
-```mermaid
-flowchart TD
-    subgraph "Before Call"
-        A1["sp -> 0xBEF0F0F8 (原始栈顶)"]
-        A2["0xBEF0F0FC: ?"]
-    end
-
-    subgraph "After Push (addi sp, sp, -12 + sw x3)"
-        B1["0xBEF0F0FC: ?"]
-        B2["0xBEF0F0F8: s2 (原值)"]
-        B3["0xBEF0F0F4: s1 (原值)"]
-        B4["sp -> 0xBEF0F0F0: s0 (原值)"]
-    end
-
-    subgraph "After Pop (lw x3 + addi sp, sp, 12)"
-        C1["sp -> 0xBEF0F0F8 (恢复)"]
-        C2["0xBEF0F0FC: ?"]
-    end
-
-    A1 --> B4
-    B4 --> C1
-```
-
-**完整栈帧操作示例**:
-
-```asm
-# def diff_of_sums(f, g, h, i):
-#     result = (f+g) - (h+i)
-#     return result
-
-diffofsums:
-    # --- 建立栈帧 Stack Frame Setup ---
-    addi sp, sp, -12       # 分配 3 words (12 bytes) 栈空间 [栈向下增长]
-    sw   s2, 8(sp)         # 保存 s2 -> sp+8
-    sw   s1, 4(sp)         # 保存 s1 -> sp+4
-    sw   s0, 0(sp)         # 保存 s0 -> sp+0
-
-    # --- 函数体 (使用 saved registers) ---
-    add s0, a0, a1         # s0 = f + g
-    add s1, a2, a3         # s1 = h + i
-    sub s2, s0, s1         # s2 = (f+g) - (h+i)
-    add a0, s2, zero       # 返回值 -> a0
-
-    # --- 栈帧拆除 Stack Frame Teardown ---
-    lw   s0, 8(sp)         # 恢复 s0 (注意 LIFO: 入栈 s2,s1,s0 -> 出栈 s0,s1,s2)
-    lw   s1, 4(sp)         # 恢复 s1
-    lw   s2, 0(sp)         # 恢复 s2
-    addi sp, sp, 12        # 回收 12 bytes 栈空间 [栈向上收缩]
-    jalr x0, 0(ra)         # 返回
-```
-
-```mermaid
-sequenceDiagram
-    participant Caller as Calling Code (main)
-    participant Callee as Called Function
-    participant Stack as Stack Memory
-    participant Regs as s0-s2 Registers
-
-    Caller->>Callee: jal ra, diffofsums
-    Callee->>Stack: addi sp, sp, -12 (allocate)
-    Callee->>Stack: sw s2, 8(sp) / sw s1, 4(sp) / sw s0, 0(sp)
-    Note over Stack,Regs: Push: save s0,s1,s2 to stack
-    Callee->>Regs: Use s0,s1,s2 freely in function body
-    Callee->>Regs: add a0, s2, zero (result)
-    Callee->>Stack: lw s0, 8(sp) / lw s1, 4(sp) / lw s2, 0(sp)
-    Note over Stack,Regs: Pop: restore s0,s1,s2 from stack
-    Callee->>Stack: addi sp, sp, 12 (deallocate)
-    Callee->>Caller: jalr x0, 0(ra) (return)
-```
-
-**入栈顺序**: s2 -> s1 -> s0
-**出栈顺序**: s0 -> s1 -> s2 (LIFO: Last-In First-Out)
-
----
 
 ## 9. 机器码编码与反汇编
 
@@ -946,21 +857,18 @@ flowchart LR
 
 **寄存器分组记忆法**:
 
-| 分组 | 编号范围 | ABI 前缀 | 用途 | 需保存? |
-|------|----------|----------|------|---------|
-| 零寄存器 | x0 | zero | 常数 0 | - |
-| 返回地址 | x1 | ra | 函数返回地址 | No |
-| 栈/全局/线程指针 | x2-x4 | sp, gp, tp | 特殊用途 | sp: Yes |
-| 临时寄存器 (前) | x5-x7 | t0-t2 | 临时变量，调用后可破坏 | No |
-| 保存寄存器 (前) | x8-x9 | s0/fp, s1 | 调用前后需一致 | Yes |
-| 参数寄存器 | x10-x17 | a0-a7 | 函数参数 + a0/a1 返回值 | No |
-| 保存寄存器 (后) | x18-x27 | s2-s11 | 调用前后需一致 | Yes |
-| 临时寄存器 (后) | x28-x31 | t3-t6 | 临时变量，调用后可破坏 | No |
+| 分组 | 编号范围 | ABI 前缀 | 用途 |
+|------|----------|----------|------|
+| 零寄存器 | x0 | zero | 常数 0 |
+| 返回地址 | x1 | ra | 函数返回地址 |
+| 栈/全局/线程指针 | x2-x4 | sp, gp, tp | 特殊用途 |
+| 临时寄存器 | x5-x7, x28-x31 | t0-t6 | 临时变量 |
+| 参数寄存器 | x10-x17 | a0-a7 | 函数参数 + a0/a1 返回值 |
+| 其他通用寄存器 | x8-x9, x18-x27 | s0-s11 | 可用于保存程序数据 |
 
 **记忆口诀**:
-- **s*** (saved): 受保护，子程序结束前必须恢复原值
-- **t*** (temporary): 临时的，子程序可以随意覆盖
-- **a*** (argument): 传参用，返回值也用 a0/a1
+- **t***: temporary 临时变量
+- **a***: argument 传参用，返回值也用 a0/a1
 - **ra**: Return Address，`jal` 自动写入
 
 ---
@@ -1146,7 +1054,7 @@ R-Type 格式:
 opcode = 0000011 = 3 (decimal)
 funct3 = 0x2 = 010
 rd = t0 = x5
-rs1 = sp = x2
+rs1 =  sp = x2
 imm = 8
 
 I-Type 格式:
@@ -1221,23 +1129,24 @@ rs1 = t0 = x5  = 00101
 
 ### 14.1 Architecture vs Microarchitecture
 
-| | Architecture (架构) | Microarchitecture (微架构) |
-|--|---------------------|----------------------------|
-| 定义 | 硬件-软件接口，程序员可见 | CPU 内部硬件实现细节 |
-| 内容 | 指令集、寄存器、数据格式、内存组织、I/O | 数据路径、控制器、流水线、缓存 |
-| 可见性 | 程序员 (汇编层面) 可见 | 对程序员透明 |
-| 关系 | 同一 Architecture 可有多种 Microarchitecture 实现 |
+|     | Architecture (架构)                         | Microarchitecture (微架构) |
+| --- | ----------------------------------------- | ----------------------- |
+| 定义  | 硬件-软件接口，程序员可见                             | CPU 内部硬件实现细节            |
+| 内容  | 指令集、寄存器、数据格式、内存组织、I/O                     | 数据路径、控制器、流水线、缓存         |
+| 可见性 | 程序员 (汇编层面) 可见                             | 对程序员透明                  |
+| 关系  | 同一 Architecture 可有多种 Microarchitecture 实现 |                         |
 
+![[Pasted image 20260511204605.png]]
 > **记忆**: Architecture = "说明书接口" (What)；Microarchitecture = "内部构造" (How)
 
 ### 14.2 `.data` vs `.text` Directives
 
-| | `.data` | `.text` |
-|--|---------|---------|
-| 作用 | 数据段开始 | 代码段开始 |
-| 内容 | 变量、常量、字符串 | 指令 (instructions) |
-| 起始地址 | `0x10010000` | `0x00400000` |
-| 常用搭配 | `.word`, `.byte`, `.ascii`, `.space` | 指令、`.globl` |
+|      | `.data`                              | `.text`           |
+| ---- | ------------------------------------ | ----------------- |
+| 作用   | 数据段开始                                | 代码段开始             |
+| 内容   | 变量、常量、字符串                            | 指令 (instructions) |
+| 起始地址 | `0x10010000`                         | `0x00400000`      |
+| 常用搭配 | `.word`, `.byte`, `.ascii`, `.space` | 指令、`.globl`       |
 
 ### 14.3 `lw` vs `sw` (Load vs Store)
 
@@ -1251,28 +1160,17 @@ rs1 = t0 = x5  = 00101
 
 ### 14.4 `lb` vs `lbu` (Sign Extension vs Zero Extension)
 
-| | `lb` (Load Byte) | `lbu` (Load Byte Unsigned) |
-|--|------------------|----------------------------|
-| 扩展方式 | **符号扩展** (Sign Extend) | **零扩展** (Zero Extend) |
-| 效果 | 填充源字节的 MSB (bit 7) | 填充 0 |
-| 示例 (读 0xFF) | `0xFFFFFFFF` | `0x000000FF` |
-| 示例 (读 0x7F) | `0x0000007F` | `0x0000007F` |
-| 适用场景 | 有符号字符处理 | 无符号字节处理 |
+|             | `lb` (Load Byte)       | `lbu` (Load Byte Unsigned) |
+| ----------- | ---------------------- | -------------------------- |
+| 扩展方式        | **符号扩展** (Sign Extend) | **零扩展** (Zero Extend)      |
+| 效果          | 填充源字节的 MSB (bit 7)     | 填充 0                       |
+| 示例 (读 0xFF) | `0xFFFFFFFF`           | `0x000000FF`               |
+| 示例 (读 0x7F) | `0x0000007F`           | `0x0000007F`               |
+| 适用场景        | 有符号字符处理                | 无符号字节处理                    |
 
 > **记忆**: `lb` = 保留符号 (Sign Extension)；`lbu` = 追加 0 (Zero Extension; "u" = unsigned)
 
-### 14.5 `s*` (Saved) vs `t*` (Temporary) Registers
-
-| | s0-s11 (Saved) | t0-t6 (Temporary) |
-|--|----------------|-------------------|
-| 保存约定 | **Preserved** (被调用者必须恢复) | **Non-preserved** (可随意覆盖) |
-| 跨函数调用 | 调用后值不变 | 调用后值可能改变 |
-| 栈操作 | 函数开头 push，末尾 pop | 不需要保存 |
-| 使用场景 | 需要跨函数调用的变量 | 临时计算，不跨调用 |
-
-> **记忆**: **s** = Safe across calls = "save on stack"；**t** = Throw away after call = "temporary"
-
-### 14.6 `li` vs `la` (Load Immediate vs Load Address)
+### 14.5 `li` vs `la` (Load Immediate vs Load Address)
 
 | | `li` (Load Immediate) | `la` (Load Address) |
 |--|------------------------|----------------------|
@@ -1342,10 +1240,7 @@ ecall           # 触发环境调用
 2. **复杂表达式先拆**: 三操作数限制 -> 用临时寄存器 (t*) 存中间结果
 3. **条件翻译用反向逻辑**: `if (a == b)` -> `bne a, b, skip`
 4. **循环三要素**: 初始化 / 退出条件判断 / 循环体 + 迭代
-5. **函数调用套模板**:
-   - 栈帧建立: `addi sp, sp, -N` + `sw` 保存 s*
-   - 栈帧拆除: `lw` 恢复 s* + `addi sp, sp, N` + `jalr x0, 0(ra)`
-6. **参数传递**: a0-a7 传参，a0 返回值
+5. **参数传递**: a0-a7 传参，a0 返回值
 
 ### 15.2 编码题 (Assembly -> Machine Code)
 

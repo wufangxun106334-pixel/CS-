@@ -16,6 +16,7 @@
 - [核心公式汇总 -- 全课程公式速查](#核心公式汇总)
 - [实验与工具](#实验与工具)
 - [考试建议](#考试建议)
+- [样卷解析](#样卷解析)
 - [快速导航矩阵](#快速导航矩阵)
 
 ---
@@ -44,22 +45,21 @@ mindmap
         SOP / POS 表达式
         卡诺图 K-maps (2/3/4变量)
         Decoder / MUX / Encoder
-        Adder (Half/Full/Ripple Carry/CLA)
+        Adder (Half/Full/Ripple Carry)
         ALU 算术逻辑单元
       Ch4 时序逻辑<br/>Sequential Logic
         SR Latch / D Latch
-        D/JK/T Flip-Flop
+        D Flip-Flop
         Registers (PIPO/SISO/SIPO/PISO)
-        Counters (Synchronous/Ripple)
-        FSM 有限状态机 (Moore/Mealy)
-        Timing (Setup Time, Hold Time)
+        Counters (4-bit register + adder)
+        Memory Arrays 存储阵列
     Processor Design<br/>处理器设计
       Ch5 体系结构<br/>Architecture
         RISC-V ISA 指令集架构
         RISC-V 汇编编程 Assembly Programming
         CPU 组织与 Fetch-Decode-Execute 循环
         机器码编码/解码 Machine Code En/Decoding
-        函数调用与栈帧 Function Calls & Stack Frame
+        函数调用 Function Calls
         R/I/S/B/U/J 六种指令格式
       Ch6 微架构<br/>Microarchitecture
         单周期处理器 Single-Cycle Processor
@@ -82,6 +82,9 @@ mindmap
       习题汇总 Worksheets
         历年习题 + 详细解答
         典型题型训练
+      样卷解析 Sample Paper
+        7题逐题解析
+        高频答题模板
 ```
 
 ---
@@ -121,7 +124,7 @@ mindmap
 | 1 | **布尔代数简化定律**：De Morgan 定律 ("破杠换号")、分配律、吸收律、互补律。A + A'B = A + B | 化简表达式的核心工具 |
 | 2 | **卡诺图 (K-map)**：图形化简化方法 (2/3/4变量)。关键：列序必须格雷码 (00,01,11,10)。分组找 Prime Implicants 和 Essential Prime Implicants | 高频考点 |
 | 3 | **Full Adder 全加器**：Sum = X XOR Y XOR Cin，Cout = X.Y + X.Cin + Y.Cin。可用两个 Half Adder + OR 门实现 | 算术电路核心 |
-| 4 | **Carry Lookahead Adder (CLA)**：G_i = X_i . Y_i (Generate)，P_i = X_i XOR Y_i (Propagate)。并行计算进位，O(log N) 延迟 vs Ripple Carry 的 O(N) | 速度与复杂度权衡 |
+| 4 | **Ripple Carry Adder**：多个 Full Adder 串联，每一位的 carry-out 传给下一位的 carry-in | 多位加法核心 |
 | 5 | **MUX (多路复用器)**：2:1 MUX -- Y = S'.D0 + S.D1。本质是数据选择器，ALU 中用于选择不同运算结果 | CPU 数据通路的关键组件 |
 
 ### [[04_时序逻辑_Sequential_Logic|Ch4 时序逻辑 (Sequential Logic)]]
@@ -131,10 +134,10 @@ mindmap
 | # | 关键概念 | 重要性 |
 |---|----------|--------|
 | 1 | **Latch vs Flip-Flop**：Latch 是 Level-sensitive (电平敏感，Enable=1 期间透明)，Flip-Flop 是 Edge-sensitive (边沿敏感，仅时钟边沿采样) | 根本性区别 |
-| 2 | **D Flip-Flop**：$Q(n+1) = D$，最常用存储元件。在时钟正边沿采样 D 输入，两沿之间 Q 不变 | 所有寄存器和 FSM 的基础 |
-| 3 | **FSM 设计流程**：(1) 问题描述 -> (2) 状态图 -> (3) 状态表 -> (4) 状态编码分配 -> (5) 下一状态方程 -> (6) 输出方程 -> (7) 电路实现。Moore 输出仅取决于状态，Mealy 输出取决于状态+输入 | 时序电路设计方法论 |
-| 4 | **Setup Time & Hold Time**：$t_{setup}$ 在时钟沿之前 D 必须稳定，$t_{hold}$ 在时钟沿之后 D 必须保持。违反导致亚稳态 (Metastability) | 时序分析核心 |
-| 5 | **同步 vs 异步计数器**：同步计数器所有 FF 共享同一 CLK (快但硬件多)，异步/Ripple 计数器前级输出驱动下级 CLK (慢但有毛刺) | 设计权衡 |
+| 2 | **D Flip-Flop**：$Q(n+1) = D$，最常用存储元件。在时钟正边沿采样 D 输入，两沿之间 Q 不变 | 寄存器基础 |
+| 3 | **Registers**：多个 D Flip-Flop 并联存储一个 data word，共享同一个 CLK | CPU 状态存储基础 |
+| 4 | **4-bit Counter**：4-bit register 保存当前计数值，4-bit adder 产生 `Q+1`，每个 positive clock edge 更新一次；`1111` 后 overflow 回 `0000` | 课程计数器模型 |
+| 5 | **Memory Arrays**：按 address 选择 word，容量公式为 $2^N \times M$ bits | 存储阵列核心 |
 
 ### [[05_体系结构_Architecture|Ch5 体系结构 (Architecture)]]
 
@@ -143,7 +146,7 @@ mindmap
 | # | 关键概念 | 重要性 |
 |---|----------|--------|
 | 1 | **RISC-V 汇编编程**：三操作数刚性语法 `op rd, rs1, rs2`。条件翻译用逆向逻辑 (`if a==b` -> `bne a, b, skip`)。循环三要素：初始化 + 退出条件 + 循环体+迭代 | 编程题核心 |
-| 2 | **函数调用与栈帧**：`jal ra, func` / `jalr x0, 0(ra)`。s* 寄存器必须保存/恢复，t* 寄存器可随意覆盖。栈帧操作：Push (addi sp, sp, -N + sw) -> 函数体 -> Pop (lw + addi sp, sp, N) | 必考模板 |
+| 2 | **函数调用**：`jal ra, func` 保存返回地址并跳转；`jalr x0, 0(ra)` 返回调用点 | 基本调用/返回模板 |
 | 3 | **六种指令格式 R/I/S/B/U/J**：R-Type=3寄存器；I-Type=2寄存器+12-bit imm；S-Type=store(imm拆分)；B-Type=分支(imm拆分4段)；U-Type=20-bit高位立即数；J-Type=跳转(imm拆分4段) | 编码/解码题核心 |
 | 4 | **机器码编码 (Assembly->Hex)**：确定格式类型 -> 画位域图 -> 查 opcode/funct3/funct7/寄存器编号 -> 填入拼接 -> 4位一组转 Hex。立即数注意符号扩展和拆分规则 | 高频考题 |
 | 5 | **伪指令 Pseudo Instructions**：`li` = `addi rd, x0, imm`；`la` = `auipc + addi`；`j` = `jal x0, label`；`bgt/ble` 交换操作数用 `blt/bge` 实现 | 编码前必须展开 |
@@ -172,7 +175,7 @@ mindmap
 | 4 | **AMAT 平均内存访问时间**：$AMAT = T_{cache} + M_{cache} \times T_{main}$。多级 Cache：$AMAT = T_{L1} + M_{L1} \times (T_{L2} + M_{L2} \times T_{main})$ | 性能计算核心公式 |
 | 5 | **虚拟内存 Virtual Memory**：VA->PA 通过 Page Table / TLB 转换。VPN -> PFN，Page Offset 不变。Page Fault 由 OS 处理，Dirty bit 决定 evict 时是否写回 | 操作系统接口关键 |
 
-### [[习题汇总_Worksheets|习题汇总 (Worksheets)]]
+### [[08习题汇总_Worksheets|习题汇总 (Worksheets)]]
 
 > 核心主题：历年习题与详细解答，涵盖所有章节典型题型
 
@@ -181,11 +184,24 @@ mindmap
 | 1 | Two's Complement 计算与溢出判断 | 数据表示练习 |
 | 2 | IEEE 754 浮点数编码/解码 | 浮点数格式掌握 |
 | 3 | K-map 简化 + 布尔代数证明 | 组合逻辑设计 |
-| 4 | FSM 完整设计 (状态图->状态表->电路) | 时序逻辑设计 |
+| 4 | SR Latch、D Flip-Flop、Register、Counter、Memory Array | 时序逻辑核心 |
 | 5 | RISC-V 汇编编程 (循环/分支/函数) | 汇编编程能力 |
 | 6 | Assembly <-> Machine Code 双向转换 | 编码/解码综合 |
 | 7 | 流水线冒险分析与 Stall 计数 | 微架构性能分析 |
 | 8 | Cache 映射与 AMAT 计算 | 存储系统计算 |
+
+### [[08_样卷解析_Sample_Paper_Analysis|样卷解析 (Sample Paper Analysis)]]
+
+> 核心主题：对 COMP30660 Sample Paper 的 7 道题逐题拆解，补齐考试型模板与笔记缺口
+
+| # | 内容 | 用途 |
+|---|------|------|
+| 1 | Q1 CMOS inverter 与功耗标准答法 | Digital Circuits 图文题模板 |
+| 2 | Q2 数据表示逐题答案，含 `0xc0600000 -> -3.5` | Data Representation 计算题模板 |
+| 3 | Q3 真值表、表达式、电路图、timing diagram | Combinational Logic 综合题模板 |
+| 4 | Q5 RISC-V 统计大写字母完整程序 | Assembly 编程题模板 |
+| 5 | Q6 single-cycle datapath 手绘版 | Microarchitecture 图解题模板 |
+| 6 | Q7 set-associative cache 与 AMAT 计算 | Memory Systems 图解与计算题模板 |
 
 ---
 
@@ -222,7 +238,7 @@ flowchart TD
 | 阶段 | 章节 | 建议时间 | 比例 | 学习重点 |
 |------|------|----------|------|----------|
 | **第一阶段 (Digital Fundamentals)** | Ch1 + Ch2 | 2-3 周 | ~20% | 晶体管特性、Two's Complement 计算、IEEE 754 编解码、进制转换 |
-| **第二阶段 (Logic Design)** | Ch3 + Ch4 | 3-4 周 | ~25% | 布尔代数、K-map 简化、Full Adder/CLA、D FF 特性、FSM 设计 |
+| **第二阶段 (Logic Design)** | Ch3 + Ch4 | 3-4 周 | ~25% | 布尔代数、K-map 简化、Full Adder、Ripple Carry Adder、SR Latch、D FF、Register、Counter |
 | **第三阶段 (Processor Design)** | Ch5 + Ch6 | 4-5 周 | ~35% | RISC-V 汇编编程、机器码编码/解码、流水线冒险分析、性能计算 |
 | **第四阶段 (Memory)** | Ch7 | 2-3 周 | ~15% | Cache 映射计算、AMAT、虚拟内存地址转换 |
 | **复习冲刺** | 全部 | 1-2 周 | ~5% | 习题练习、跨章节综合题 |
@@ -241,7 +257,7 @@ flowchart TD
 flowchart LR
     A["晶体管<br/>Transistors<br/>NMOS/PMOS"] -->|"CMOS 技术"| B["逻辑门<br/>Logic Gates<br/>NOT/AND/OR/XOR"]
     B -->|"组合连接"| C["组合电路<br/>Combinational Circuits<br/>Adder/MUX/Decoder/ALU"]
-    C -->|"加入 FF/Latch"| D["时序电路<br/>Sequential Circuits<br/>Register/Counter/FSM"]
+    C -->|"加入 FF/Latch"| D["时序电路<br/>Sequential Circuits<br/>Register/Counter/Memory Array"]
     D -->|"组成数据通路+控制"| E["处理器<br/>Processor<br/>Datapath + Control Unit"]
     E -->|"加上内存+IO"| F["计算机<br/>Computer<br/>完整的冯·诺依曼架构"]
 ```
@@ -251,7 +267,7 @@ flowchart LR
 | 晶体管 | [[01_数字电路_Digital_Circuits\|Ch1]] | NMOS/PMOS 的互补特性 | 可控的电子开关 | 物理尺寸、功耗、速度 |
 | 逻辑门 | [[01_数字电路_Digital_Circuits\|Ch1]] | NOT/AND/OR/NAND/NOR/XOR/XNOR | 实现布尔逻辑运算 | 扇入/扇出、传播延迟 |
 | 组合电路 | [[03_组合逻辑_Combinational_Logic\|Ch3]] | Adder/MUX/Decoder/ALU/比较器 | 算术与逻辑运算 | 无记忆，输出仅由当前输入决定 |
-| 时序电路 | [[04_时序逻辑_Sequential_Logic\|Ch4]] | FF, Register, Counter, FSM | 状态记忆，时序控制 | 时钟约束 (setup/hold) |
+| 时序电路 | [[04_时序逻辑_Sequential_Logic\|Ch4]] | SR Latch, D FF, Register, Counter, Memory Array | 状态记忆，按地址存取 | 边沿触发与容量计算 |
 | 处理器 | [[05_体系结构_Architecture\|Ch5]] + [[06_微架构_Microarchitecture\|Ch6]] | PC, Register File, ALU, Control Unit, Pipeline | 执行指令序列 | 数据/控制冒险，功耗墙 |
 
 ---
@@ -289,17 +305,15 @@ flowchart LR
 
     MH --> CACHE["Cache 组织<br/>Cache Organization<br/>(Ch7)<br/>SRAM, 组相联, LRU, Write-back"]
     MH --> VM["虚拟内存<br/>Virtual Memory<br/>(Ch7)<br/>Page Table, TLB, Page Fault"]
-    MH --> ASM_MEM["汇编访存<br/>Memory in Assembly<br/>(Ch5)<br/>lw/sw/lb/sb, 栈帧"]
+    MH --> ASM_MEM["汇编访存<br/>Memory in Assembly<br/>(Ch5)<br/>lw/sw/lb/sb"]
 
     CACHE --- LC["局部性原理 Locality<br/>Data: Ch4 (FF/Register 存储)"]
     VM --- MMU["MMU 地址转换<br/>VA->PA 映射"]
-    ASM_MEM --- STACK["栈操作 Stack<br/>Ch5: sp, jal, 栈帧 push/pop"]
 ```
 
 **关键联系**:
 - [[04_时序逻辑_Sequential_Logic|Ch4]] 中的 **Register 和 Memory Array** 是 CPU 侧的存储基础
 - [[05_体系结构_Architecture|Ch5]] 中的 **lw/sw 指令** 直接驱动 [[07_存储系统_Memory_Systems|Ch7]] 中 **Cache 的读写流程** (Hit/Miss/Write-back)
-- [[05_体系结构_Architecture|Ch5]] 中的 **栈帧 (Stack Frame)** 是一种特殊的存储使用模式，通过 `sp` 寄存器和 `lw/sw` 指令操作内存
 - [[07_存储系统_Memory_Systems|Ch7]] 中的 **虚拟内存** 使得每个程序看到独立的地址空间，[[05_体系结构_Architecture|Ch5]] 中的 `la` 伪指令加载的是虚拟地址
 
 ---
@@ -326,7 +340,6 @@ flowchart TD
 - [[03_组合逻辑_Combinational_Logic|Ch3]] 的 **MUX** 是 [[06_微架构_Microarchitecture|Ch6]] 中数据路由和控制信号选择的基础元件
 - [[03_组合逻辑_Combinational_Logic|Ch3]] 的 **Decoder** 是 [[06_微架构_Microarchitecture|Ch6]] 中 **Control Unit** 的核心组件 (opcode->控制信号)
 - [[04_时序逻辑_Sequential_Logic|Ch4]] 的 **D Flip-Flop** 是 [[06_微架构_Microarchitecture|Ch6]] 中 **PC, Register File, Pipeline Registers** 的基本存储单元
-- [[04_时序逻辑_Sequential_Logic|Ch4]] 的 **Setup/Hold Time** 直接决定 [[06_微架构_Microarchitecture|Ch6]] 的 **最小时钟周期** $T_{min} \ge t_{pcq} + t_{pd} + t_{setup}$
 
 ---
 
@@ -355,28 +368,20 @@ flowchart TD
 
 ### Ch3 组合逻辑 (Combinational Logic)
 
-| 公式 | 表达式 | 说明 |
-|------|--------|------|
-| De Morgan 定律 | $\overline{A+B} = \overline{A} \cdot \overline{B}$; $\overline{A \cdot B} = \overline{A} + \overline{B}$ | "破杠换号" |
-| 吸收律 | $A + AB = A$; $A + A'B = A + B$ | 简化关键公式 |
-| 互补律 | $A + A' = 1$; $A \cdot A' = 0$ | 基本定律 |
-| Half Adder | Sum = $X \oplus Y$, Carry = $X \cdot Y$ | 2 输入加法 |
-| Full Adder | Sum = $X \oplus Y \oplus C_{in}$, $C_{out} = X \cdot Y + X \cdot C_{in} + Y \cdot C_{in}$ | 3 输入加法 |
-| CLA Generate | $G_i = X_i \cdot Y_i$ | 进位生成 |
-| CLA Propagate | $P_i = X_i \oplus Y_i$ | 进位传播 |
-| CLA 进位方程 | $C_{i+1} = G_i + P_i \cdot C_i$ | 超前进位核心 |
-| 2:1 MUX | $Y = S' \cdot D_0 + S \cdot D_1$ | 基本选择器 |
+| 公式            | 表达式                                                                                                      | 说明     |
+| ------------- | -------------------------------------------------------------------------------------------------------- | ------ |
+| De Morgan 定律  | $\overline{A+B} = \overline{A} \cdot \overline{B}$; $\overline{A \cdot B} = \overline{A} + \overline{B}$ | "破杠换号" |
+| 吸收律           | $A + AB = A$; $A + A'B = A + B$                                                                          | 简化关键公式 |
+| 互补律           | $A + A' = 1$; $A \cdot A' = 0$                                                                           | 基本定律   |
+| Half Adder    | Sum = $X \oplus Y$, Carry = $X \cdot Y$                                                                  | 2 输入加法 |
+| Full Adder    | Sum = $X \oplus Y \oplus C_{in}$, $C_{out} = X \cdot Y + X \cdot C_{in} + Y \cdot C_{in}$                | 3 输入加法 |
+| 2:1 MUX       | $Y = S' \cdot D_0 + S \cdot D_1$                                                                         | 基本选择器  |
 
 ### Ch4 时序逻辑 (Sequential Logic)
 
 | 公式         | 表达式                                                          | 说明           |
 | ---------- | ------------------------------------------------------------ | ------------ |
 | D FF 特征方程  | $Q(n+1) = D$                                                 | 最简特征方程       |
-| JK FF 特征方程 | $Q(n+1) = J \cdot \overline{Q(n)} + \overline{K} \cdot Q(n)$ | J=K=1 时翻转    |
-| T FF 特征方程  | $Q(n+1) = T \oplus Q(n)$                                     | T=1 时翻转      |
-| 时钟频率与周期    | $f = 1 / T$                                                  | $T = 1 / f$  |
-| 最小时钟周期     | $T_{min} \ge t_{pcq} + t_{pd\_comb} + t_{setup}$             | 时序分析核心       |
-| 最大时钟频率     | $f_{max} = 1 / T_{min}$                                      |              |
 | 存储器容量      | $Capacity = 2^N \times M$ bits                               | N=地址位宽, M=字宽 |
 |            |                                                              |              |
 
@@ -386,8 +391,6 @@ flowchart TD
 |------------|------|
 | 有效地址 = base register + offset | `lw rd, imm(rs1)` 中 `rs1 + imm` |
 | 函数调用: `jal ra, func`; 返回: `jalr x0, 0(ra)` | 基本调用/返回模板 |
-| 栈帧 Push: `addi sp, sp, -N` + `sw s*, offset(sp)` | s* 寄存器保存 |
-| 栈帧 Pop: `lw s*, offset(sp)` + `addi sp, sp, N` | s* 寄存器恢复 |
 | 伪指令展开：`li` = `addi rd, x0, imm` | Load Immediate |
 | 伪指令展开：`la` = `auipc + addi` | Load Address |
 
@@ -432,8 +435,7 @@ flowchart TD
 | 2:1 / 4:1 MUX 电路设计 | [[03_组合逻辑_Combinational_Logic\|Ch3]] | NOT + AND + OR 门实现，改变选择线验证输出 |
 | 3-to-8 Decoder | [[03_组合逻辑_Combinational_Logic\|Ch3]] | AND 门阵列实现，输入二进制码输出 one-hot |
 | D Flip-Flop 与 Register | [[04_时序逻辑_Sequential_Logic\|Ch4]] | 4-bit Register (4个 D FF + CLK)，观察边沿触发行为 |
-| 同步计数器设计 | [[04_时序逻辑_Sequential_Logic\|Ch4]] | T FF + AND 门实现 4-bit 同步计数器，验证计数序列 |
-| FSM 序列检测器 ("101") | [[04_时序逻辑_Sequential_Logic\|Ch4]] | 完整 Moore/Mealy FSM 实现，D FF + 组合逻辑 |
+| 4-bit Counter | [[04_时序逻辑_Sequential_Logic\|Ch4]] | 4-bit Register + 4-bit Adder，每个正边沿加 1 |
 
 > **提示**: Logisim Evolution 免费开源，可从 GitHub 下载。在仿真时注意观察组合逻辑的即时响应和时序逻辑的边沿触发行为之间的区别。
 
@@ -446,23 +448,21 @@ flowchart TD
 | 基本算术指令编程 (add/sub/addi) | [[05_体系结构_Architecture\|Ch5]] | 写汇编程序，观察寄存器和内存变化 |
 | 分支与循环实现 (beq/bne/blt/bge/j) | [[05_体系结构_Architecture\|Ch5]] | 实现 if-else, while, for 循环 |
 | 数组遍历与内存操作 (lw/sw) | [[05_体系结构_Architecture\|Ch5]] | 用 lw/sw 读写数组，观察 .data 段 |
-| 函数调用与栈帧 (jal/jalr/栈操作) | [[05_体系结构_Architecture\|Ch5]] | 实现嵌套函数调用，观察 sp 和栈内容 |
-| 递归函数实现 | [[05_体系结构_Architecture\|Ch5]] | 阶乘/斐波那契递归，理解 ra 的保存与恢复 |
+| 函数调用 (jal/jalr) | [[05_体系结构_Architecture\|Ch5]] | 理解跳转调用和返回地址 |
 | 机器码验证 | [[05_体系结构_Architecture\|Ch5]] | 将自己编写的汇编对照 RARS 生成的机器码，验证编码正确性 |
 | 单步执行与流水线可视化 | [[06_微架构_Microarchitecture\|Ch6]] | 观察每条指令在五级流水线中的执行阶段 |
 | 数据冒险观察 | [[06_微架构_Microarchitecture\|Ch6]] | 写 RAW 依赖指令序列，理解 forwarding/stall 的发生条件 |
 
 > **提示**: RARS 是 RISC-V 课程的标准工具，免费开源。建议在写汇编程序时始终开启 "Show Labels Window" 和 "Data Segment Window" 以便调试。
 
-### 习题训练 -- 来自 [[习题汇总_Worksheets|习题汇总]]
+### 习题训练 -- 来自 [[08习题汇总_Worksheets|习题汇总]]
 
 | 题型 | 难度 | 建议练习量 |
 |------|------|-----------|
 | Two's Complement 计算与溢出 | 中等 | 至少 5 道独立练习 |
 | IEEE 754 浮点数编解码 | 中等 | 至少 5 道 (含正数/负数/小数) |
 | K-map 简化 + 布尔代数 | 中等 | 至少 5 道 (含 Don't Care) |
-| Full Adder / CLA 分析与设计 | 中等 | 至少 3 道 |
-| FSM 完整设计流程 | 较难 | 至少 3 道 (含 Moore 和 Mealy) |
+| Full Adder / Ripple Carry Adder 分析与设计 | 中等 | 至少 3 道 |
 | RISC-V 汇编编程 | 较难 | 至少 5 道 (含分支/循环/函数调用) |
 | Assembly <-> Machine Code 转换 | 中等 | 至少 8 道 (覆盖所有格式 R/I/S/B/U/J) |
 | 流水线冒险分析 | 较难 | 至少 3 道 (含五级流水线时空图) |
@@ -479,8 +479,8 @@ flowchart TD
 |------|----------|--------------|----------|
 | 进制转换与数据表示 | ~10-15% | [[02_数据表示_Data_Representation\|Ch2]] | 熟练 Two's Complement 和 IEEE 754 的转换方法，特别注意边界情况（溢出、特殊值） |
 | 组合逻辑设计 (K-map/简化) | ~15-20% | [[03_组合逻辑_Combinational_Logic\|Ch3]] | 掌握 K-map 分组技巧和布尔代数定律，注意 SOP vs POS 的选择 |
-| 时序逻辑 / FSM 设计 | ~10-15% | [[04_时序逻辑_Sequential_Logic\|Ch4]] | 完整 FSM 设计流程 (状态图->电路)，特别注意 Moore vs Mealy 的输出位置 |
-| RISC-V 汇编编程 | ~15-20% | [[05_体系结构_Architecture\|Ch5]] | 多练习编程模板 (分支/循环/函数/栈帧)，注意 s* vs t* 寄存器的保存约定 |
+| 时序逻辑 | ~10-15% | [[04_时序逻辑_Sequential_Logic\|Ch4]] | SR Latch、D Flip-Flop、Register、Counter、Memory Array |
+| RISC-V 汇编编程 | ~15-20% | [[05_体系结构_Architecture\|Ch5]] | 多练习编程模板，重点是分支、循环、load/store 和函数调用 |
 | Machine Code 编码/解码 | ~10-15% | [[05_体系结构_Architecture\|Ch5]] | 牢记六种格式的位域布局，特别注意 B/J 型立即数的拆分规则 |
 | 微架构与流水线分析 | ~10-15% | [[06_微架构_Microarchitecture\|Ch6]] | 掌握控制信号表、五级流水线阶段功能、三种冒险的识别与解决 |
 | Memory Hierarchy / Cache | ~10-15% | [[07_存储系统_Memory_Systems\|Ch7]] | 熟练 Cache 地址字段划分计算、AMAT 公式、虚拟内存地址转换 |
@@ -489,9 +489,25 @@ flowchart TD
 ### 考试策略建议
 
 1. **先做计算题和编码题**：Two's Complement 转换、机器码编码/解码、Cache AMAT 计算等步骤明确、不易出错，适合先拿分
-2. **汇编编程题留足时间**：需要仔细考虑条件逻辑、寄存器选择、栈帧结构，建议打草稿画寄存器映射表
+2. **汇编编程题留足时间**：需要仔细考虑条件逻辑、寄存器选择和内存访问，建议打草稿画寄存器映射表
 3. **K-map 分组注意完整性**：确保所有 1 都被至少一个 Prime Implicant 覆盖；Don't Care 条件善用但不必须全用
 4. **流水线题画时空图**：五级流水线时间图 (IF-ID-EX-MEM-WB) 是分析冒险和 Stall 的最可靠工具
+
+---
+
+## 样卷解析
+
+> 详见 [[08_样卷解析_Sample_Paper_Analysis|08 样卷解析 -- COMP30660 Sample Paper]]。
+
+该笔记基于样卷 7 道题逐项补齐以下高频模板：
+
+- CMOS inverter 与功耗图解释
+- 数据表示逐题答案，特别是 IEEE754 hex 转十进制
+- 组合逻辑真值表、布尔表达式、电路图、timing diagram
+- D flip-flop、SR latch、memory capacity 计算
+- RISC-V 字符串扫描与大写字母计数程序
+- single-cycle RISC-V datapath 手绘结构
+- set-associative cache 与 AMAT 计算
 
 ### 易错提醒 Top 10
 
@@ -506,7 +522,6 @@ flowchart TD
 | 7 | 忘记 IEEE 754 规范化数的隐含 leading 1 | 尾数字段前面有隐式的 `1.`，非规范化数才是 `0.` |
 | 8 | 流水线 Load-Use Hazard 忘记需要 1 stall | 即使有 forwarding，lw 的数据在 MEM 才可用，dependent 指令需 stall 1 周期 |
 | 9 | Virtual Memory 中 Page Offset 会变 | **Page Offset 在 VA->PA 转换中完全不变！** |
-| 10 | 时钟周期计算忘记加 setup time | $T_{min} \ge t_{pcq} + t_{pd\_comb} + t_{setup}$，三项缺一不可 |
 
 ### 建议复习节奏
 
@@ -527,12 +542,42 @@ flowchart TD
 | **Ch1** | - | 电压->二进制 | 逻辑门->组合电路 | 晶体管->SRAM / 功耗 | IC 工艺背景 | 晶体管速度->时钟频率 | SRAM/DRAM 技术 | - |
 | **Ch2** | 电压->二进制 | - | ALU 运算规则 | FF 存储 bit | 汇编编程基础 | 数据通路操作数 | 内存中的数据格式 | TC/FP |
 | **Ch3** | 逻辑门->组合电路 | ALU 运算规则 | - | FF 前的组合逻辑 | Control Unit | ALU/MUX/Datapath | 地址解码器 | K-map |
-| **Ch4** | 晶体管->SRAM | FF 存储 bit | FF 前的组合逻辑 | - | PC/Register File | Pipeline Registers | Memory Array | FSM |
+| **Ch4** | 晶体管->SRAM | FF 存储 bit | FF 前的组合逻辑 | - | PC/Register File | Pipeline Registers | Memory Array | SR/D FF |
 | **Ch5** | IC 工艺背景 | 汇编编程基础 | Control Unit | PC/Register File | - | 指令执行流程 | lw/sw 指令 | 汇编 |
 | **Ch6** | 晶体管速度->频率 | 数据通路操作数 | ALU/MUX/Datapath | Pipeline Registers | 指令执行流程 | - | 访存阶段 MEM | 流水线 |
 | **Ch7** | SRAM/DRAM 技术 | 内存数据格式 | 地址解码器 | Memory Array | lw/sw 指令 | 访存阶段 MEM | - | Cache |
 
 > **使用方式**: 上表展示每对章节之间的交叉知识点。例如，复习 Ch5 汇编编程时，行 Ch5 列 Ch2 提醒你需要理解数据表示 (Two's Complement/IEEE 754) 作为编程基础。
+
+---
+
+## 知识库导入与合并索引
+
+> 更新日期: 2026-05-09
+> 笔记目录: `/Users/alex/Documents/Obsidian Vault/COMP30660 Arch架构`
+
+已将课程资料目录 `/Users/alex/Documents/COMP30660 Arch架构` 中的 week1, week2, week3, week4, week5, week7, week8, week9, week10 导入为本地可检索知识库，并按相同知识点合并到现有笔记体系。
+
+### 导入结果
+
+| 类型 | 数量 | 用途 |
+|------|------|------|
+| PDF | 20 | 讲义、worksheet、solutions 的正文检索 |
+| ASM | 13 | RISC-V 程序模板、数组/字符串/函数示例 |
+| MD | 8 | Week7 体系结构中文补充笔记 |
+| TXT | 1 | Mini Processor / worksheet 文本资料 |
+
+### 合并入口
+
+- [[09_知识库导入索引_Knowledge_Base_Index]]: PDF、ASM、worksheet 与现有笔记的合并映射
+- 本地导入索引: `/Users/alex/Documents/COMP30660 Arch架构/.workbuddy/knowledge_base/index.md`
+- 本地导入清单: `/Users/alex/Documents/COMP30660 Arch架构/.workbuddy/knowledge_base/manifest.json`
+
+### 去重原则
+
+- 同一知识点以章节主笔记为 canonical，例如 Two's Complement 只归入 [[02_数据表示_Data_Representation]]，不会在 worksheet 解答中重复展开。
+- RISC-V 代码按程序模式合并: 基础 load/store、字符串处理、数组循环、函数调用、系统调用。
+- Worksheet 题目与答案归入 [[08习题汇总_Worksheets]]，理论解释仍链接回对应章节。
 
 ---
 

@@ -119,3 +119,12 @@ Student s3 = s1.createFriend("Charlie");     // 实例方法
 不对。
 
 `final` 只表示“赋值后不能再改”，不等于一定是 `static`。
+
+---
+
+## 相关链接
+
+- [[COMP30820_Java/00 索引|返回索引]]
+- [[05 类与对象]]
+- [[07 继承与多态]]
+- [[18 综合案例分析 (Luhn & Aggregation & Edible)|18 综合案例分析]]

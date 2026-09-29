@@ -1,8 +1,10 @@
 {
-  "interfaceFontFamily": "Inter",
-  "baseFontSize": 15,
+  "interfaceFontFamily": "Heiti SC",
+  "baseFontSize": 14,
   "accentColor": "#180939",
   "enabledCssSnippets": [
     "mermaid-font"
-  ]
+  ],
+  "textFontFamily": "PingFang SC",
+  "monospaceFontFamily": "Menlo"
 }

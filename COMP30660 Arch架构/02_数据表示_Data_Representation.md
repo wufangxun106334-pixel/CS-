@@ -240,7 +240,7 @@ flowchart LR
 
 ---
 
-## 有符号数表示 (Signed Number Representation)
+## 有符号数表示 (Signed Number Representation) 原码
 
 ### 符号-幅度表示法 (Sign-Magnitude)
 
@@ -422,14 +422,24 @@ $$
 溢出！结果错误 ❌
 ```
 
-> **修复方法**: 扩展 word width (增加位数)，但扩展时需要**符号扩展 (sign extension)**。
+**修复方法**: 扩展 word width (增加位数)，但扩展时需要**符号扩展 (sign extension)**。
+**如果原数是正数，左边补 0。**  
+**如果原数是负数，左边补 1。**
+00000101 ->  00000000 00000101
+11111011 -〉11111111 11111011
+
+
+
 
 **Two's Complement 溢出轮 (Overflow Wheel)**:
 
 ```mermaid
 flowchart LR
+
     subgraph wheel["4-bit Two's Complement Overflow Wheel"]
+    
         direction LR
+        
         A["加法 (Addition)\n顺时针移动"]
         B["减法 (Subtraction)\n逆时针移动"]
         C["溢出极限 (Overflow Limit)\n在 +7 和 -8 之间"]
@@ -521,22 +531,23 @@ flowchart LR
 ---
 
 ### IEEE 754 单精度浮点数格式 (Single Precision, 32-bit)
-
 ```mermaid
 flowchart LR
-    subgraph ieee754["IEEE 754 Single Precision (32-bit)"]
+    subgraph IEEE754["IEEE 754 Single Precision (32-bit)"]
         direction LR
-        S["Sign (S)\n1 bit\nbit[31]\n0=正 1=负"]
-        E["Biased Exponent (E)\n8 bits\nbits[30:23]\nBias=127"]
-        F["Fractional Mantissa (F)\n23 bits\nbits[22:0]\n隐含 leading 1"]
+
+        S["Sign (S)<br/>1 bit<br/>bit[31]<br/>0 = positive, 1 = negative"]
+        E["Biased Exponent (E)<br/>8 bits<br/>bits[30:23]<br/>Bias = 127"]
+        F["Fraction (F)<br/>23 bits<br/>bits[22:0]<br/>Implicit leading 1"]
     end
+
 ```
 
-| 字段 | 位数 | 说明 |
-|------|------|------|
-| **Sign (S)** | 1 bit (bit[31]) | 0 = 正数, 1 = 负数 |
+| 字段               | 位数                   | 说明                                 |
+| ---------------- | -------------------- | ---------------------------------- |
+| **Sign (S)**     | 1 bit (bit[31])      | 0 = 正数, 1 = 负数                     |
 | **Exponent (E)** | 8 bits (bits[30:23]) | 偏移指数 (biased exponent), bias = 127 |
-| **Mantissa (F)** | 23 bits (bits[22:0]) | 小数尾数，隐含 leading 1 (1.F) |
+| **Mantissa (F)** | 23 bits (bits[22:0]) | 小数尾数，隐含 leading 1 (1.F)            |
 
 $$
 \boxed{\text{浮点数公式: } (-1)^S \times 1.F \times 2^{E - \text{127}}}
@@ -823,14 +834,15 @@ ASCII 仅支持英文（128 个字符 / 7 bits）。Unicode 是为解决全球�
 
 ### 颜色位深度 (Color Bit Depth)
 
-| Bit Depth (bits per pixel) | 说明 |
-|---------------------------|------|
-| 8 | Standard VGA, 简单图形, GIF 图像 |
-| 16 | "High color", 早期 LCD, 部分手持设备 |
-| **24** | **True color**, 现代显示器标准 (每色 8 bits) |
-| 30 | Deep color, 专业摄影/视频编辑 |
-| 36 | 高端专业显示 / HDR |
-| 48 | 超高精度, 科学成像 |
+| Bit Depth (bits per pixel) | 说明                                  |
+| -------------------------- | ----------------------------------- |
+| 8                          | Standard VGA, 简单图形, GIF 图像          |
+| 16                         | "High color", 早期 LCD, 部分手持设备        |
+| **24**                     | **True color**, 现代显示器标准 (每色 8 bits) |
+| 30                         | Deep color, 专业摄影/视频编辑               |
+| 36                         | 高端专业显示 / HDR                        |
+| 48                         | 超高精度, 科学成像                          |
+|                            |                                     |
 
 ### 分辨率 (Resolution)
 
@@ -924,17 +936,17 @@ ASCII 仅支持英文（128 个字符 / 7 bits）。Unicode 是为解决全球�
 
 ### 逻辑移位 (Logical Shift)
 
-| 操作 | 描述 | 示例 (1011) |
-|------|------|------------|
-| **Logical Shift Left (LSL)** | 所有位左移, 最右补 0 | `1011` $\to$ `0110` |
+| 操作                            | 描述           | 示例 (1011)           |
+| ----------------------------- | ------------ | ------------------- |
+| **Logical Shift Left (LSL)**  | 所有位左移, 最右补 0 | `1011` $\to$ `0110` |
 | **Logical Shift Right (LSR)** | 所有位右移, 最左补 0 | `1011` $\to$ `0101` |
 
 ### 算术移位 (Arithmetic Shift)
 
-| 操作 | 描述 | 示例 (1011 = -5 in TC) |
-|------|------|------------------------|
-| **Arithmetic Shift Left (ASL)** | 与逻辑左移相同, 左移补 0 | `1011` $\to$ `0110` |
-| **Arithmetic Shift Right (ASR)** | 右移但**保持符号位** (最左补符号位的值) | `1011` $\to$ `1101` |
+| 操作                               | 描述                      | 示例 (1011 = -5 in TC) |
+| -------------------------------- | ----------------------- | -------------------- |
+| **Arithmetic Shift Left (ASL)**  | 与逻辑左移相同, 左移补 0          | `1011` $\to$ `0110`  |
+| **Arithmetic Shift Right (ASR)** | 右移但**保持符号位** (最左补符号位的值) | `1011` $\to$ `1101`  |
 
 > **关键**: 算术右移保留符号，用于有符号数的除法。负数的算术右移在左边补 1，正数补 0。
 
@@ -1015,15 +1027,15 @@ $$\boxed{\text{右移1位 = 除以 2 (Right Shift = Divide by 2)}}$$
 
 ### 3. Fixed-Point vs Floating-Point
 
-| 特性 | Fixed-Point (定点数) | Floating-Point (浮点数) |
-|------|---------------------|------------------------|
-| **小数点位** | 固定在某位置 | 浮动, 由指数决定 |
-| **硬件复杂度** | **简单** (整数运算 + 移位) | 复杂 (需处理指数和尾数) |
-| **精度** | 固定精度 | 相对精度 (约 7 位十进制/单精度) |
-| **范围** | 有限 | **极大范围** (单精度约 $±3.4×10^{38}$) |
-| **应用** | DSP, 嵌入式系统, GPU (部分) | 科学计算, 通用计算 |
-| **速度** | 快 | 较慢 (但现代有 FPU 硬件加速) |
-| **二进制结构** | 无特别字段 | 字段: Sign + Exponent + Mantissa |
+| 特性        | Fixed-Point (定点数)    | Floating-Point (浮点数)           |
+| --------- | -------------------- | ------------------------------ |
+| **小数点位**  | 固定在某位置               | 浮动, 由指数决定                      |
+| **硬件复杂度** | **简单** (整数运算 + 移位)   | 复杂 (需处理指数和尾数)                  |
+| **精度**    | 固定精度                 | 相对精度 (约 7 位十进制/单精度)            |
+| **范围**    | 有限                   | **极大范围** (单精度约 $±3.4×10^{38}$) |
+| **应用**    | DSP, 嵌入式系统, GPU (部分) | 科学计算, 通用计算                     |
+| **速度**    | 快                    | 较慢 (但现代有 FPU 硬件加速)             |
+| **二进制结构** | 无特别字段                | 字段: Sign + Exponent + Mantissa |
 
 ---
 

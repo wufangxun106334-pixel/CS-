@@ -38,11 +38,11 @@
 ARP 帮主机知道“发给哪个 MAC”；
 switch 再依据这个 MAC 把 frame 送到正确端口。
 
-详见 [[概念/ARP]]。
+详见 [[COMP30650_NETWORK/概念/ARP]]。
 
 ### Backward Learning 反向学习
 
-[[交换机]]的典型学习逻辑：
+交换机的典型学习逻辑：
 
 1. 看进入 frame 的 `source MAC`
 2. 记录“这个 MAC 出现在这个输入端口”
@@ -69,7 +69,7 @@ switch 再依据这个 MAC 把 frame 送到正确端口。
 - MTU / fragmentation
 - ICMP
 
-详见 [[概念/Routing、Forwarding 与 Longest Prefix Match]]。
+详见 [[COMP30650_NETWORK/概念/Routing、Forwarding 与 Longest Prefix Match]]。
 
 ## 5. 一条常见路径里谁做什么
 

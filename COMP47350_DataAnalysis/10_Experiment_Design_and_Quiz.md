@@ -126,6 +126,8 @@ Lab6 Offices 数据（10 条样本）的例子：
 ```
 正确的比较流程：
 1. 使用相同的 K-Fold 划分（固定 random_state）
+random_state is a seed used to control randomness in machine learning algorithms. Setting it ensures that random operations such as train/test splitting or random forest sampling produce the same result each time, making experiments reproducible.
+
 2. 对每个模型计算 K 折 CV 的 mean ± std
 3. 检查两个模型的置信区间是否重叠
 4. 如果区间不重叠 → 差距显著；重叠 → 差距不显著
@@ -180,23 +182,22 @@ Lecture12 强调的经典案例：
 
 ## 3. Compiled Quiz Questions 核心概念速查
 
-以下从 Week 11 的 74 道 Quiz 题目中，按主题提炼核心考点。完整的 Quiz 原始文件位于：
-`/Users/alex/Documents/COMP47350_DataAnalysis/week11/Compiled Quiz Questions with Answers.pdf`
+
 
 ### 3.1 CRISP-DM 与数据质量 (Data Quality)
 
-| # | 考点 | 正确理解 |
-|:---|:---|:---|
-| Q1 | Data Understanding 阶段的目的 | 探索并获取对数据的初步洞察（不是清洗或建模） |
-| Q2 | DQR 不包含什么？ | 训练好的机器学习模型（那是 Modeling 阶段的产出） |
-| Q3 | `df.describe()` 返回什么？ | Count, Mean, Std, Min, Q1(25%), Median(50%), Q3(75%), Max |
-| Q4 | Cardinality 的定义 | 特征中不同/唯一值的数量 (`df['col'].nunique()`) |
-| Q5 | `object` dtype 含义 | Python 字符串或混合类型，需转换为 category 或做编码 |
-| Q6 | DQP 比 DQR 多什么？ | DQP 包含具体的处理策略和动作（DQR 只诊断） |
-| Q7 | 数据质量问题的信号 | (1) Count 少于总行数=缺失; (2) Mean>>Median=右偏/异常值; (3) 重复行 |
-| Q8 | 检测缺失值的函数 | `df.isnull().sum()` |
-| Q9 | Boxplot 的作用 | 可视化分布并检测数值特征中的异常值 |
-| Q10 | 衡量数值特征离散度的指标 | Standard Deviation (标准差) |
+| #   | 考点                       | 正确理解                                                                                                                                                                                                         |
+| :-- | :----------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Q1  | Data Understanding 阶段的目的 | 探索并获取对数据的初步洞察（不是清洗或建模）                                                                                                                                                                                       |
+| Q2  | DQR 不包含什么？               | 训练好的机器学习模型（那是 Modeling 阶段的产出）                                                                                                                                                                                |
+| Q3  | `df.describe()` 返回什么？    | Count, Mean, Std, Min, Q1(25%), Median(50%), Q3(75%), Max                                                                                                                                                    |
+| Q4  | Cardinality 的定义          | 特征中不同/唯一值的数量 (`df['col'].nunique()`)                                                                                                                                                                         |
+| Q5  | `object` dtype 含义        | Python 字符串或混合类型，需转换为 category 或做编码                                                                                                                                                                           |
+| Q6  | DQP 比 DQR 多什么？           | DQP 包含具体的处理策略和动作（DQR 只诊断）                                                                                                                                                                                    |
+| Q7  | 数据质量问题的信号                | (1) Count 少于总行数=缺失; (2) Mean>>Median=右偏/异常值; (3) 重复行                                                                                                                                                         |
+| Q8  | 检测缺失值的函数                 | `df.isnull().sum()`                                                                                                                                                                                          |
+| Q9  | Boxplot 的作用              | 可视化分布并检测数值特征中的异常值<br>Boxplot helps identify the central tendency, spread, skewness, and potential outliers of a numeric feature. In the storage cost example, it would highlight 210 as a potential outlier. |
+| Q10 | 衡量数值特征离散度的指标             | Standard Deviation (标准差)                                                                                                                                                                                     |
 
 ### 3.2 数据理解与清洗 (Data Understanding & Cleaning)
 
@@ -263,34 +264,34 @@ Lecture12 强调的经典案例：
 
 ### 3.6 逻辑回归与分类 (Logistic Regression & Classification)
 
-| # | 考点 | 正确理解 |
-|:---|:---|:---|
-| Q54 | 二分类任务的定义 | 将每个样本分配到两个类别之一 |
-| Q55 | 逻辑回归的原始输出 | 类别成员的概率 (再通过阈值转为类别) |
-| Q56 | P=0.82 在阈值 0.5 下的类别 | Class 1 |
-| Q57 | Accuracy 的定义 | 正确预测数 / 总预测数 |
-| Q58 | Precision 的含义 | 预测为正类的样本中，真正为正类的比例 |
-| Q59 | Recall 的含义 | 真实正类样本中，被正确预测为正类的比例 |
-| Q60 | 训练集高 Accuracy 为什么可能误导 | 模型可能过拟合，泛化能力差 |
-| Q61 | 不平衡数据下 Accuracy 为什么不可靠 | 全猜多数类也能获得高 Accuracy |
-| Q62 | F1-Score 是什么 | Precision 和 Recall 的**调和平均** |
-| Q63 | 不重训练如何改变预测 | 调整决策阈值 (Threshold Tuning) |
+| #   | 考点                     | 正确理解                         |
+| :-- | :--------------------- | :--------------------------- |
+| Q54 | 二分类任务的定义               | 将每个样本分配到两个类别之一               |
+| Q55 | 逻辑回归的原始输出              | 类别成员的概率 (再通过阈值转为类别)          |
+| Q56 | P=0.82 在阈值 0.5 下的类别    | Class 1                      |
+| Q57 | Accuracy 的定义           | 正确预测数 / 总预测数                 |
+| Q58 | Precision 的含义          | 预测为正类的样本中，真正为正类的比例           |
+| Q59 | Recall 的含义             | 真实正类样本中，被正确预测为正类的比例          |
+| Q60 | 训练集高 Accuracy 为什么可能误导  | 模型可能过拟合，泛化能力差                |
+| Q61 | 不平衡数据下 Accuracy 为什么不可靠 | 全猜多数类也能获得高 Accuracy          |
+| Q62 | F1-Score 是什么           | Precision 和 Recall 的**调和平均** |
+| Q63 | 不重训练如何改变预测             | 调整决策阈值 (Threshold Tuning)    |
 
 ### 3.7 决策树与随机森林 (Decision Tree & Random Forest)
 
-| #   | 考点                 | 正确理解                     |
-| :-- | :----------------- | :----------------------- |
-| Q64 | 节点"Pure"的含义        | 节点中所有样本属于同一个类别           |
-| Q65 | Gini Impurity 衡量什么 | 节点中类别标签的混合程度（不纯度）        |
-| Q66 | 特征重要性高表示什么         | **该特征在树的各次分裂中更多地降低了不纯度** |
-| Q67 | 决策树 100% 训练准确率的含义  | 很可能过拟合了（记住了训练集的每个细节）     |
-| Q68 | 如何防止决策树过拟合         | 设最大深度 `max_depth`        |
-| Q69 | 决策树的一个局限           | 对数据的微小变化敏感（不稳健）          |
-| Q70 | Bootstrap 样本是什么    | 从训练集中**有放回地**随机抽样得到的样本   |
-| Q71 | OOB Score 是什么      | 用每棵树未使用的 ~37% 数据评估的准确率   |
-| Q72 | 随机森林随机选特征的原因       | 降低树之间的相关性，提升泛化能力         |
-| Q73 | Pipeline 的好处       | 确保预处理和建模一致，可作为一个整体保存     |
-| Q74 | "调测试集让分数好看"        | 这是数据造假，不可接受              |
+| #   | 考点                 | 正确理解                               |
+| :-- | :----------------- | :--------------------------------- |
+| Q64 | 节点"Pure"的含义        | 节点中所有样本属于同一个类别                     |
+| Q65 | Gini Impurity 衡量什么 | 节点中类别标签的混合程度（不纯度）                  |
+| Q66 | 特征重要性高表示什么         | **该特征在树的各次分裂中更多地降低了不纯度**           |
+| Q67 | 决策树 100% 训练准确率的含义  | 很可能过拟合了（记住了训练集的每个细节）               |
+| Q68 | 如何防止决策树过拟合         | 设最大深度 `max_depth`                  |
+| Q69 | 决策树的一个局限           | 对数据的微小变化敏感（不稳健）高方差,树的结构变动非常依赖新输入数据 |
+| Q70 | Bootstrap 样本是什么    | 从训练集中**有放回地**随机抽样得到的样本             |
+| Q71 | OOB Score 是什么      | 用每棵树未使用的 ~37% 数据评估的准确率             |
+| Q72 | 随机森林随机选特征的原因       | 降低树之间的相关性，提升泛化能力                   |
+| Q73 | Pipeline 的好处       | 确保预处理和建模一致，可作为一个整体保存               |
+| Q74 | "调测试集让分数好看"        | 这是数据造假，不可接受                        |
 
 ---
 
@@ -298,17 +299,17 @@ Lecture12 强调的经典案例：
 
 ### 4.1 概念混淆陷阱
 
-| 易混淆对 | 区别 |
-|:---|:---|
-| **DQR vs DQP** | DQR = 诊断报告 (描述问题)；DQP = 行动计划 (解决问题) |
-| **Precision vs Recall** | Precision = 报警里面多少是真故障；Recall = 故障里面多少被发现了 |
-| **Accuracy vs F1** | Accuracy = 全局正确率（易被不平衡欺骗）；F1 = 精确率和召回率的调和平均 |
-| **Overfitting vs Underfitting** | 过拟合 = 训练好测试差 (高方差)；欠拟合 = 训练差测试也差 (高偏差) |
-| **RMSE vs MAE** | RMSE ≥ MAE 永远成立；RMSE 对异常误差惩罚更重 |
-| **Ridge vs Lasso** | Ridge (L2) 系数趋零≠零；Lasso (L1) 系数可能精确为零 |
-| **OOB vs CV** | OOB = 随机森林自带评估（不额外切分）；CV = 通用的 K 折评估方法 |
-| **Min-Max vs Z-Score** | Min-Max = [0,1] 区间，怕异常值；Z-Score = 均值0方差1，更稳健 |
-| **qcut vs cut** | qcut = 等频（每箱样本数相等）；cut = 等宽（每个区间宽度相等） |
+| 易混淆对                            | 区别                                           |
+| :------------------------------ | :------------------------------------------- |
+| **DQR vs DQP**                  | DQR = 诊断报告 (描述问题)；DQP = 行动计划 (解决问题)          |
+| **Precision vs Recall**         | Precision = 报警里面多少是真故障；Recall = 故障里面多少被发现了   |
+| **Accuracy vs F1**              | Accuracy = 全局正确率（易被不平衡欺骗）；F1 = 精确率和召回率的调和平均  |
+| **Overfitting vs Underfitting** | 过拟合 = 训练好测试差 (高方差)；欠拟合 = 训练差测试也差 (高偏差)       |
+| **RMSE vs MAE**                 | RMSE ≥ MAE 永远成立；RMSE 对异常误差惩罚更重               |
+| **Ridge vs Lasso**              | Ridge (L2) 系数趋零≠零；Lasso (L1) 系数可能精确为零        |
+| **OOB vs CV**                   | OOB = 随机森林自带评估（不额外切分）；CV = 通用的 K 折评估方法       |
+| **Min-Max vs Z-Score**          | Min-Max = [0,1] 区间，怕异常值；Z-Score = 均值0方差1，更稳健 |
+| **qcut vs cut**                 | qcut = 等频（每箱样本数相等）；cut = 等宽（每个区间宽度相等）        |
 
 ### 4.2 考试高频计算
 

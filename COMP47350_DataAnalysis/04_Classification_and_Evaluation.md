@@ -38,8 +38,8 @@ Precision 和 Recall 的关系不是独立的 — 调整阈值时，一个上升
 ### 3.2 Python 生成 F1 等高线图 (完整代码)
 
 课程 Week8 的 `f1_contour.py` 实现如下：
+![[Pasted image 20260504212709.png]]
 
-![[Pasted image 20260428145901.png]]
 
 > [!tip] 生成的图表
 > 运行此代码生成 `f1_contour.png`（课程原始输出位于 `week8/f1_contour.png`）。图表显示等高线从 F1=0.1 到 F1=1.0，以及 P=0.8, R=0.3 点的偏导数方向箭头。
@@ -60,7 +60,7 @@ $$\frac{\partial F1}{\partial R} = \frac{2P^2}{(P+R)^2} = \frac{2 \times 0.64}{1
 默认情况下，`predict()` 函数使用 0.5 作为阈值 (Threshold)。但在实际商业场景中，**错报 (FP)** 和 **漏报 (FN)** 的成本完全不同。
 > [!example] 阈值权衡 (Threshold Trade-off)
 > 若设备故障漏报 (FN) 损失巨大，我们应**降低阈值 (Lower threshold)** (如降至 0.2)。这会使模型更容易报警，从而提高 Recall，捕获更多潜在故障；但代价是 FP 增加，Precision 下降。
-
+![[Pasted image 20260504213514.png]]
 ### 4.1 阈值调整的商业成本计算 (考试高频)
 假定漏报成本 = 5000€, 误报成本 = 500€。
 

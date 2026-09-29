@@ -224,10 +224,10 @@ flowchart TD
     end
 ```
 
-| Gate 电压 | NMOS 状态 | PMOS 状态 |
-|-----------|----------|----------|
-| **High (1)** | **ON** (导通) | **OFF** (截止) |
-| **Low (0)** | **OFF** (截止) | **ON** (导通) |
+| Gate 电压      | NMOS 状态      | PMOS 状态      |
+| ------------ | ------------ | ------------ |
+| **High (1)** | **ON** (导通)  | **OFF** (截止) |
+| **Low (0)**  | **OFF** (截止) | **ON** (导通)  |
 
 > **关键规律**: NMOS 和 PMOS 行为恰好相反。NMOS 高电平导通，PMOS 低电平导通。这就是"互补 (complementary)"的含义。
 
@@ -236,17 +236,8 @@ flowchart TD
 ## 六、NOT 门的 CMOS 实现
 
 ### 6.1 电路结构
+![[Pasted image 20260509203208.png|264]]
 
-```mermaid
-flowchart TD
-    SUPPLY["Supply (1)"] ---|连接| PMOS_S["PMOS Source"]
-    PMOS_D["PMOS Drain"] --- Y["Output Y (node)"]
-    Y --- NMOS_D["NMOS Drain"]
-    NMOS_S["NMOS Source"] --- GND["Ground (0)"]
-
-    A["Input A"] --- PMOS_G["PMOS Gate"]
-    A --- NMOS_G["NMOS Gate"]
-```
 
 **电路连接**:
 - PMOS 的 Source 连接到 **Supply (1)**
@@ -441,10 +432,10 @@ flowchart TB
 
 ### 10.1 两种功耗类型
 
-| 功耗类型 | 英文 | 定义 | 发生条件 |
-|----------|------|------|----------|
-| **静态功耗** | Static Power | 晶体管未切换时的功耗 | 微小**漏电流 (leakage currents)** 从 Supply 流向 Ground |
-| **动态功耗** | Dynamic Power | 晶体管切换时的功耗 | 晶体管状态改变时 |
+| 功耗类型     | 英文            | 定义         | 发生条件                                            |
+| -------- | ------------- | ---------- | ----------------------------------------------- |
+| **静态功耗** | Static Power  | 晶体管未切换时的功耗 | 微小**漏电流 (leakage currents)** 从 Supply 流向 Ground |
+| **动态功耗** | Dynamic Power | 晶体管切换时的功耗  | 晶体管状态改变时                                        |
 
 ### 10.2 动态功耗的两个组成部分
 

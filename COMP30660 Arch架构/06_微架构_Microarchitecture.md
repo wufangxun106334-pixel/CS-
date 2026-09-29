@@ -41,11 +41,12 @@ flowchart TB
 
 **关键分区:**
 
-| 层次 | 范围 | 关键概念 |
-|------|------|----------|
-| **Software (软件)** | Application Software + Operating Systems | programs, libraries, device drivers |
-| **Architecture (架构)** | Architecture | **instructions, registers, formats** -- 程序员可见的接口 |
-| **Hardware (硬件)** | Microarchitecture, Logic, Digital Circuits, Analog Circuits, Devices, Physics | 内部实现细节 |
+| 层次                     | 范围                                                                                                                                                                                                                                          | 关键概念                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| **Software (软件)**      | Application Software + Operating Systems                                                                                                                                                                                                    | programs, libraries, device drivers              |
+| **Architecture (架构)**  | Architecture defines the programmer-visible interface of a processor, including **instructions, registers and instruction formats.**                                                                                                        | **instructions, registers, formats** -- 程序员可见的接口 |
+| **Hardware (硬件)**      | Microarchitecture, Logic, Digital Circuits, Analog Circuits, Devices, Physics                                                                                                                                                               | 内部实现细节                                           |
+| Microarchitecture(微架构) | Microarchitecture is the internal hardware organisation used to **implement** that architecture, including **functional units, memories, datapaths and control.** The same architecture can be implemented by different microarchitectures. |                                                  |
 
 > **核心要点**: Architecture 定义了处理器"能做什么"（What），Microarchitecture 定义了处理器"如何做"（How）。同一个 Architecture (如 RISC-V RV32I) 可以有多种不同的 Microarchitecture 实现。
 
@@ -86,46 +87,20 @@ flowchart TB
 
 ### 3.2 数据通路组件 Datapath Components
 
-```mermaid
-flowchart LR
-    subgraph Datapath["Single-Cycle Datapath 单周期数据通路"]
-        direction TB
-
-        PC["PC<br/>Program Counter<br/>程序计数器<br/>保存当前指令地址"]
-        IM["Instruction<br/>Memory<br/>指令存储器<br/>保存机器指令程序"]
-        CU["Control Unit<br/>控制单元<br/>将指令转换为控制信号"]
-        RF["Register File<br/>寄存器文件<br/>包含所有寄存器<br/>保存处理器当前操作的数据"]
-        ALU["ALU<br/>算术逻辑单元<br/>执行算术(add, sub)和<br/>逻辑(or, and)操作"]
-        EXT["Extend Unit<br/>符号扩展单元<br/>将立即数扩展为32位"]
-        DM["Data Memory<br/>数据存储器<br/>保存二进制数据"]
-
-        PC --> IM
-        IM --> CU
-        IM --> RF
-        CU --> RF
-        CU --> ALU
-        CU --> DM
-        CU --> EXT
-        RF --> ALU
-        EXT --> ALU
-        ALU --> DM
-        ALU --> RF
-        DM --> RF
-    end
-```
+![[Pasted image 20260511210141.png]]
 
 #### 3.2.1 各组件详解
 
-| 组件 | 英文 | 功能 | 类型 |
-|------|------|------|------|
-| **PC (Program Counter)** | 程序计数器 | 保存当前机器指令的地址 | Sequential (时序元件) |
-| **Instruction Memory** | 指令存储器 | 保存机器指令程序（只读） | Combinational (组合元件) |
-| **Control Unit** | 控制单元 | 将当前机器指令转换为控制其他单元运行的信号 | Combinational |
-| **Register File** | 寄存器文件 | 包含所有寄存器（如x0-x31），保存处理器当前操作的数据 | Sequential |
-| **ALU (Arithmetic and Logic Unit)** | 算术逻辑单元 | 执行算术运算(add, subtract)和逻辑运算(or, and) | Combinational |
-| **Data Memory** | 数据存储器 | 保存二进制数据（可读写） | Sequential |
-| **Extend Unit** | 符号扩展单元 | 将较短立即数字段符号扩展为32位 | Combinational |
-| **Multiplexers (MUX)** | 多路选择器 | 在多个输入源之间选择（数据通路图中未直接标注但广泛存在） | Combinational |
+| 组件                                  | 英文     | 功能                                                                                                  | 类型                   |
+| ----------------------------------- | ------ | --------------------------------------------------------------------------------------------------- | -------------------- |
+| **PC (Program Counter)**            | 程序计数器  | Saves the address of the current machine instruction                                                | Sequential (时序元件)    |
+| **Instruction Memory**              | 指令存储器  | Stores the machine instruction program                                                              | Combinational (组合元件) |
+| **Control Unit**                    | 控制单元   | Converts the current machine instruction into signals that control other units                      | Combinational        |
+| **Register File**                   | 寄存器文件  | and stores the data currently being operated on by the CPU                                          | Sequential           |
+| **ALU (Arithmetic and Logic Unit)** | 算术逻辑单元 | Performs arithmetic operations (add, subtract) and logical operations (or, and)                     | Combinational        |
+| **Data Memory**                     | 数据存储器  | Stores binary data (read/write)\|                                                                   | Sequential           |
+| **Extend Unit**                     | 符号扩展单元 | Sign-extends shorter immediate fields to 32 bit                                                     | Combinational        |
+| **Multiplexers (MUX)**              | 多路选择器  | Selects between multiple input sources and forward it to a single output, based on control signals. | Combinational        |
 
 ### 3.3 取指-译码-执行周期 Fetch-Decode-Execute Cycle
 
@@ -313,24 +288,24 @@ flowchart LR
 
 **控制信号说明:**
 
-| 控制信号 | 含义 | 值=0 | 值=1 |
-|----------|------|------|------|
-| **RegWrite** | 寄存器写使能 | 不写寄存器 | 写寄存器 |
-| **ALUSrc** | ALU第二个源操作数 | 来自寄存器文件(reg2) | 来自立即数(imm) |
-| **MemWrite** | 数据存储器写使能 | 不写存储器 | 写存储器 |
-| **MemRead** | 数据存储器读使能 | 不读存储器 | 读存储器 |
-| **MemtoReg** | 写回寄存器的数据源 | 来自ALU结果 | 来自数据存储器 |
-| **Branch** | 分支控制 | PC ← PC+4 | PC ← 分支目标 (if equal) |
-| **ALUOp** | ALU操作类型 | — | 00=add, 01=sub, 10=R-type由funct决定 |
+| 控制信号         | 含义         | 值=0           | 值=1                               |
+| ------------ | ---------- | ------------- | --------------------------------- |
+| **RegWrite** | 寄存器写使能     | 不写寄存器         | 写寄存器                              |
+| **ALUSrc**   | ALU第二个源操作数 | 来自寄存器文件(reg2) | 来自立即数(imm)                        |
+| **MemWrite** | 数据存储器写使能   | 不写存储器         | 写存储器                              |
+| **MemRead**  | 数据存储器读使能   | 不读存储器         | 读存储器                              |
+| **MemtoReg** | 写回寄存器的数据源  | 来自ALU结果       | 来自数据存储器                           |
+| **Branch**   | 分支控制       | PC ← PC+4     | PC ← 分支目标 (if equal)              |
+| **ALUOp**    | ALU操作类型    | —             | 00=add, 01=sub, 10=R-type由funct决定 |
 
 #### 3.8.2 各指令类型的控制信号总结
 
-| 指令类型 | 需要 ALUSrc=1? | 需要 MemWrite? | 需要 MemRead? | MemtoReg? | RegWrite? | Branch? | ALU操作 |
-|----------|:--------------:|:--------------:|:-------------:|:---------:|:---------:|:-------:|:-------:|
-| **R-type** (or, add, sub) | No (用reg2) | No | No | 0 (ALU结果) | Yes | No | R-type运算 |
-| **lw** | Yes (用imm) | No | Yes | 1 (内存数据) | Yes | No | 加法(地址计算) |
-| **sw** | Yes (用imm) | Yes | No | X (无关) | No | No | 加法(地址计算) |
-| **beq** | No (用reg2) | No | No | X (无关) | No | Yes | 减法(比较) |
+| 指令类型                      | 需要 ALUSrc=1? | 需要 MemWrite? | 需要 MemRead? | MemtoReg? | RegWrite? | Branch? |  ALU操作   |
+| ------------------------- | :----------: | :----------: | :---------: | :-------: | :-------: | :-----: | :------: |
+| **R-type** (or, add, sub) |  No (用reg2)  |      No      |     No      | 0 (ALU结果) |    Yes    |   No    | R-type运算 |
+| **lw**                    |  Yes (用imm)  |      No      |     Yes     | 1 (内存数据)  |    Yes    |   No    | 加法(地址计算) |
+| **sw**                    |  Yes (用imm)  |     Yes      |     No      |  X (无关)   |    No     |   No    | 加法(地址计算) |
+| **beq**                   |  No (用reg2)  |      No      |     No      |  X (无关)   |    No     |   Yes   |  减法(比较)  |
 
 ### 3.9 单周期处理器的关键特性
 
@@ -363,11 +338,15 @@ flowchart LR
 流水线处理器的关键要素:
 
 1. 每个步骤在一个时钟周期内完成（因此步骤被称为 **stage 阶段**）
-2. 每个阶段的硬件必须独立（需要少量硬件复制）
-3. 一个阶段的输出在时钟正边沿被 **pipeline registers (流水线寄存器)** 捕获
-4. 这些寄存器的输出为下一阶段提供输入
+2. 每个阶段的硬件必须独立（需要少量硬件复制)
+3. 一个阶段的**输出**在时钟正边沿被 **pipeline registers (流水线寄存器)** **捕获**
+4. 这些寄存器的**输出**为下一阶段提供**输入**
 5. 时钟周期设置为**最慢阶段所需时间**（因此各阶段的工作量需要均衡以最小化时钟周期）
-
+6. The **instruction** execution process is divided into multiple **stages**, and each stage completes within one **clock** **cycle**.
+7. **Each stage requires its own dedicated hardware resources**, so some functional units must be duplicated.
+8. The **output** of each stage is **captured** by **pipeline** registers on the **rising** edge of the clock.
+9. **The outputs of these registers become the inputs of the next stage**, allowing **instructions** to flow through the pipeline.
+10. **The clock cycle is determined by the slowest stage**, so the workload of each stage should be balanced to minimize the clock period.
 ```mermaid
 flowchart LR
     subgraph Pipeline["5-Stage Pipeline 五级流水线"]
@@ -387,24 +366,24 @@ flowchart LR
 
 #### 4.2.1 各阶段详解
 
-| 阶段 | 缩写 | 全称 | 主要操作 | 涉及的功能单元 |
-|------|------|------|----------|---------------|
-| **IF** | Fetch | Instruction Fetch | 从指令存储器读取指令; PC ← PC+4 | PC, Instruction Memory |
-| **ID** | Decode | Instruction Decode | 译码指令; 读取寄存器操作数; 符号扩展立即数 | Control Unit, Register File, Extend |
-| **EX** | Execute | Execute | ALU 运算; 计算地址或结果 | ALU |
-| **MEM** | Memory | Memory Access | 读/写数据存储器 | Data Memory |
-| **WB** | Write Back | Write Back | 将结果写回寄存器文件 | Register File |
+| 阶段      | 缩写         | 全称                 | 主要操作                                                                                       | 涉及的功能单元                             |
+| ------- | ---------- | ------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------- |
+| **IF**  | Fetch      | Instruction Fetch  | Read an instruction from the instruction cache; PC ← PC+4                                  | PC, Instruction Memory              |
+| **ID**  | Decode     | Instruction Decode | Decode the instruction; read **register** **operands**; sign-extend **immediate** operands | Control Unit, Register File, Extend |
+| **EX**  | Execute    | Execute            | Use the ALU to perform the operation or compute an address.                                | ALU                                 |
+| **MEM** | Memory     | Memory Access      | Access data memory for load or store instructions.                                         | Data **Memory**                     |
+| **WB**  | Write Back | Write Back         | Write the result back to the register file.                                                | **Register** File                   |
 
 #### 4.2.2 流水线寄存器 Pipeline Registers
 
 流水线寄存器位于相邻阶段之间，用于保存该阶段产生的结果并传递给下一阶段:
 
-| 寄存器 | 位置 | 保存的关键信息 |
-|--------|------|---------------|
-| **IF/ID** | Fetch 和 Decode 之间 | 指令码、PC+4 |
-| **ID/EX** | Decode 和 Execute 之间 | 控制信号、寄存器数据1和2、符号扩展立即数、PC+4、目标寄存器编号 |
-| **EX/MEM** | Execute 和 Memory 之间 | ALU结果、要写入存储器的数据、目标寄存器编号、控制信号 |
-| **MEM/WB** | Memory 和 Write Back 之间 | 从存储器读取的数据、ALU结果、目标寄存器编号、控制信号 |
+| 寄存器        | 位置                     | 保存的关键信息                            |
+| ---------- | ---------------------- | ---------------------------------- |
+| **IF/ID**  | Fetch 和 Decode 之间      | 指令码、PC+4                           |
+| **ID/EX**  | Decode 和 Execute 之间    | 控制信号、寄存器数据1和2、符号扩展立即数、PC+4、目标寄存器编号 |
+| **EX/MEM** | Execute 和 Memory 之间    | ALU结果、要写入存储器的数据、目标寄存器编号、控制信号       |
+| **MEM/WB** | Memory 和 Write Back 之间 | 从存储器读取的数据、ALU结果、目标寄存器编号、控制信号       |
 
 ### 4.3 流水线执行示例 (Pipelined Execution)
 
@@ -579,19 +558,19 @@ flowchart TB
 
 **分支预测技术:**
 
-| 技术 | 英文 | 描述 |
-|------|------|------|
-| **静态分支预测** | Static Branch Prediction | 总是预测 backward branch (循环) taken; forward branch (if-else) not taken |
-| **动态分支预测 (1-bit)** | Dynamic Branch Prediction (1-bit) | 记录最近一次该分支是否 taken，假设本次结果与上次相同 |
-| **动态分支预测 (2-bit)** | Dynamic Branch Prediction (2-bit) | 使用有限状态机，需要连续两次预测错误才改变预测方向 |
+| 技术                 | 英文                                | 描述                                                                  |
+| ------------------ | --------------------------------- | ------------------------------------------------------------------- |
+| **静态分支预测**         | Static Branch Prediction          | 总是预测 backward branch (循环) taken; forward branch (if-else) not taken |
+| **动态分支预测 (1-bit)** | Dynamic Branch Prediction (1-bit) | 记录最近一次该分支是否 taken，假设本次结果与上次相同                                       |
+| **动态分支预测 (2-bit)** | Dynamic Branch Prediction (2-bit) | 使用有限状态机，需要连续两次预测错误才改变预测方向                                           |
 
 ### 5.4 三种冒险类型总结
 
-| 冒险类型 | 英文 | 原因 | 解决方案 |
-|----------|------|------|----------|
-| **结构冒险** | Structural Hazard | 硬件资源冲突（多个指令同时需要同一功能单元） | 复制硬件资源; 设计独立的指令和数据存储器 |
-| **数据冒险** | Data Hazard | 指令之间存在数据依赖 (RAW: Read After Write) | **Forwarding/bypassing** (转发); **Stalling** (停顿) |
-| **控制冒险** | Control Hazard | 分支/跳转指令导致 PC 不确定 | **Branch Prediction** (分支预测); **Stalling** (停顿) |
+| 冒险类型     | 英文                | 原因                                 | 解决方案                                             |
+| -------- | ----------------- | ---------------------------------- | ------------------------------------------------ |
+| **结构冒险** | Structural Hazard | 硬件资源冲突（多个指令同时需要同一功能单元）             | 复制硬件资源; 设计独立的指令和数据存储器                            |
+| **数据冒险** | Data Hazard       | 指令之间存在数据依赖 (RAW: Read After Write) | **Forwarding/bypassing** (转发); **Stalling** (停顿) |
+| **控制冒险** | Control Hazard    | 分支/跳转指令导致 PC 不确定                   | **Branch Prediction** (分支预测); **Stalling** (停顿)  |
 
 ---
 
@@ -730,18 +709,19 @@ Speedup = ───────────────────────�
 
 ### 7.3 Superscalar Processor (超标量处理器)
 
-> "A superscalar processor contains copies of the datapath hardware that executes multiple instructions simultaneously."
+> "A superscalar processor contains copies of the datapath hardware that execute **multiple** instructions simultaneously."
 > （超标量处理器包含数据通路硬件的多个副本，同时执行多条指令。）
 
 **2-way superscalar 相对于基本流水线的修改:**
 
-| 修改 | 说明 |
-|------|------|
-| 同时取两条指令 | 每次 Fetch 取出 2 条指令 |
-| Register File 端口翻倍 | 需要更多读/写端口 |
-| 两个 ALU | 可以同时执行两条运算指令 |
-| Data Memory 端口翻倍 | 支持同时的 load/store |
-| 控制单元修改 | 处理同时执行两条指令的复杂情况 |
+| 修改                 | 说明                |
+| ------------------ | ----------------- |
+| 同时取两条指令            | 每次 Fetch 取出 2 条指令 |
+| Register File 端口翻倍 | 需要更多读/写端口         |
+| 两个 ALU             | 可以同时执行两条运算指令      |
+| Data Memory 端口翻倍   | 支持同时的 load/store  |
+| 控制单元修改             | 处理同时执行两条指令的复杂情况   |
+|                    |                   |
 
 > 注意: 2-way superscalar 并非恰好是 1-way 的 2 倍速度，因为同时执行的指令增多导致 stall 增多。
 
@@ -754,13 +734,22 @@ Speedup = ───────────────────────�
 3. **发射 (issue)** 这些独立指令，尽早开始处理，**不考虑它们原本在程序中的顺序**
 4. **提交 (commit)**: 结果必须按程序顺序提交，以保证正确的程序行为
 
+An out-of-order **processor** examines upcoming **instructions** and 
+identifies those whose **operands** are already **independent**, i.e. instructions that do **not** depend on **earlier** **instructions** that have not yet been completed.
+The processor issues (starts processing) these **independent** instructions as soon as possible,
+**regardless** of their **order** in the program.
+The **results** are **committed** in program **order** to preserve correct program behaviour.
+The technique improves processor performance as it makes use of otherwise idle execution units.
+
 **优点**: 利用原本空闲的执行单元，提高处理器性能。
 
 ### 7.5 Multithreading Processor (多线程处理器)
 
-- **Process (进程)**: 在计算机上运行的程序
+- **Process (进程)**: 在计算机上运行的程序program
 - **Thread (线程)**: 进程内独立的执行单元，运行一系列指令
+- An **independent** execution **unit** within a process that executes a sequence of instructions
 - 同一进程内的线程共享内存和资源，但独立执行
+- Threads within the same process share **memory** and resources but **execute** independently.
 
 **传统处理器**: 在进程和线程之间切换 (单线程)
 **多线程处理器**: 包含多份架构状态 (PC, registers, stack)，可以同时运行多个线程
@@ -792,15 +781,15 @@ Speedup = ───────────────────────�
 
 ### 8.2 Single-cycle vs Multi-cycle vs Pipelined
 
-| 特性 | Single-cycle (单周期) | Multi-cycle (多周期) | Pipelined (流水线) |
-|------|----------------------|---------------------|-------------------|
-| **CPI** | 1 | >1 (每条指令多周期) | ~1 (理想) |
-| **时钟周期** | 由最慢指令决定 (长) | 由最慢阶段决定 (中) | 由最慢阶段决定 (短) |
-| **硬件复用** | 无 | 有 (功能单元在不同周期复用) | 无 (各阶段硬件独立) |
-| **吞吐率** | 低 | 中 | 高 |
-| **设计复杂度** | 低 | 中 | 高 |
-| **控制复杂度** | 低 | 高 (需要FSM) | 中 (需要处理冒险) |
-| **同时处理的指令** | 1 条 | 1 条 | 多条 (ILP) |
+| 特性          | Single-cycle (单周期) | Multi-cycle (多周期) | Pipelined (流水线) |
+| ----------- | ------------------ | ----------------- | --------------- |
+| **CPI**     | 1                  | >1 (每条指令多周期)      | ~1 (理想)         |
+| **时钟周期**    | 由最慢指令决定 (长)        | 由最慢阶段决定 (中)       | 由最慢阶段决定 (短)     |
+| **硬件复用**    | 无                  | 有 (功能单元在不同周期复用)   | 无 (各阶段硬件独立)     |
+| **吞吐率**     | 低                  | 中                 | 高               |
+| **设计复杂度**   | 低                  | 中                 | 高               |
+| **控制复杂度**   | 低                  | 高 (控制信号跨多个周期变化)   | 中 (需要处理冒险)      |
+| **同时处理的指令** | 1 条                | 1 条               | 多条 (ILP)        |
 
 > 注: 课件主要对比 Single-cycle 和 Pipelined，Multi-cycle 是书中提到的一种中间方案（将指令分多个周期执行，复用功能单元）。
 
@@ -814,22 +803,22 @@ Speedup = ───────────────────────�
 
 ### 8.4 Forwarding vs Stalling
 
-| | Forwarding (转发/Bypassing) | Stalling (停顿) |
-|---|---|---|
-| **原理** | 将数据从产生点直接路由到消费点，不走寄存器文件 | 暂停流水线一个或多个周期等待数据就绪 |
-| **性能影响** | 几乎无性能损失 | 降低性能 (增加 CPI) |
-| **硬件代价** | 增加多路选择器和数据通路 | 增加停顿检测和流水线暂停逻辑 |
-| **适用场景** | 数据在流水线后方已产生，可转发 (如 ALU→ALU) | 数据尚未产生，无法转发 (如 Load-Use) |
-| **例子** | `add→sub` 的 RAW 依赖可通过转发解决 | `lw→sub` 的 Load-Use 依赖需要 1 个 stall |
+|          | Forwarding (转发/Bypassing)   | Stalling (停顿)                      |
+| -------- | --------------------------- | ---------------------------------- |
+| **原理**   | 将数据从产生点直接路由到消费点，不走寄存器文件     | 暂停流水线一个或多个周期等待数据就绪                 |
+| **性能影响** | 几乎无性能损失                     | 降低性能 (增加 CPI)                      |
+| **硬件代价** | 增加多路选择器和数据通路                | 增加停顿检测和流水线暂停逻辑                     |
+| **适用场景** | 数据在流水线后方已产生，可转发 (如 ALU→ALU) | 数据尚未产生，无法转发 (如 Load-Use)           |
+| **例子**   | `add→sub` 的 RAW 依赖可通过转发解决   | `lw→sub` 的 Load-Use 依赖需要 1 个 stall |
 
 ### 8.5 Combinational vs Sequential Elements in Datapath
 
-| | Combinational (组合元件) | Sequential (时序元件) |
-|---|---|---|
-| **定义** | 输出仅取决于当前输入 | 输出取决于当前输入和历史状态 |
-| **状态** | 无状态 (stateless) | 有状态 (stateful) |
+|              | Combinational (组合元件)                       | Sequential (时序元件)                                  |
+| ------------ | ------------------------------------------ | -------------------------------------------------- |
+| **定义**       | 输出仅取决于当前输入                                 | 输出取决于当前输入和历史状态                                     |
+| **状态**       | 无状态 (stateless)                            | 有状态 (stateful)                                     |
 | **数据通路中的例子** | ALU, Extend Unit, MUX, Adder, Control Unit | PC, Register File, Data Memory, Pipeline Registers |
-| **时钟行为** | 连续操作，输出随时钟传播延迟变化 | 仅在时钟边沿更新 |
+| **时钟行为**     | 连续操作，输出随时钟传播延迟变化                           | 仅在时钟边沿更新                                           |
 
 ### 8.6 不同指令类型的控制信号对比
 
@@ -1048,29 +1037,29 @@ mindmap
 
 ## 附录: 关键术语中英对照
 
-| 中文 | 英文 | 缩写 |
-|------|------|------|
-| 微架构 | Microarchitecture | -- |
-| 架构 | Architecture | -- |
-| 单周期处理器 | Single-Cycle Processor | -- |
-| 流水线处理器 | Pipelined Processor | -- |
-| 程序计数器 | Program Counter | PC |
-| 指令存储器 | Instruction Memory | I-Mem |
-| 数据存储器 | Data Memory | D-Mem |
-| 寄存器文件 | Register File | RF |
-| 算术逻辑单元 | Arithmetic and Logic Unit | ALU |
-| 控制单元 | Control Unit | CU |
-| 符号扩展 | Sign Extension / Extend | -- |
-| 流水线寄存器 | Pipeline Register | -- |
-| 冒险 | Hazard | -- |
-| 停顿 | Stall | -- |
-| 转发 / 旁路 | Forwarding / Bypassing | -- |
-| 分支预测 | Branch Prediction | -- |
-| 超标量 | Superscalar | -- |
-| 乱序执行 | Out-of-Order Execution | OoO |
-| 指令级并行 | Instruction-Level Parallelism | ILP |
-| 吞吐率 | Throughput | -- |
-| 每周期指令数 | Cycles Per Instruction | CPI |
-| 每秒百万指令 | Million Instructions Per Second | MIPS |
-| 时钟周期 | Clock Period | T |
-| 停顿率 | Stall Rate | S |
+| 中文      | 英文                              | 缩写    |
+| ------- | ------------------------------- | ----- |
+| 微架构     | Microarchitecture               | --    |
+| 架构      | Architecture                    | --    |
+| 单周期处理器  | Single-Cycle Processor          | --    |
+| 流水线处理器  | Pipelined Processor             | --    |
+| 程序计数器   | Program Counter                 | PC    |
+| 指令存储器   | Instruction Memory              | I-Mem |
+| 数据存储器   | Data Memory                     | D-Mem |
+| 寄存器文件   | Register File                   | RF    |
+| 算术逻辑单元  | Arithmetic and Logic Unit       | ALU   |
+| 控制单元    | Control Unit                    | CU    |
+| 符号扩展    | Sign Extension / Extend         | --    |
+| 流水线寄存器  | Pipeline Register               | --    |
+| 冒险      | Hazard                          | --    |
+| 停顿      | Stall                           | --    |
+| 转发 / 旁路 | Forwarding / Bypassing          | --    |
+| 分支预测    | Branch Prediction               | --    |
+| 超标量     | Superscalar                     | --    |
+| 乱序执行    | Out-of-Order Execution          | OoO   |
+| 指令级并行   | Instruction-Level Parallelism   | ILP   |
+| 吞吐率     | Throughput                      | --    |
+| 每周期指令数  | Cycles Per Instruction          | CPI   |
+| 每秒百万指令  | Million Instructions Per Second | MIPS  |
+| 时钟周期    | Clock Period                    | T     |
+| 停顿率     | Stall Rate                      | S     |

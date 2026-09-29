@@ -7,7 +7,7 @@
 - 网络层知道 `发往哪个 IP`
 - 链路层知道 `当前这一跳发给哪个 MAC`
 
-这就是 [[概念/ARP]] 的存在原因。
+这就是 [[COMP30650_NETWORK/概念/ARP]] 的存在原因。
 
 ## 2. 中英对照
 
@@ -34,7 +34,7 @@ IP 地址是网络层使用的逻辑地址 `logical address`。
 ### 相关章节
 
 - [[04 网络层]]
-- [[概念/Routing、Forwarding 与 Longest Prefix Match]]
+- [[COMP30650_NETWORK/概念/Routing、Forwarding 与 Longest Prefix Match]]
 
 ## 4. MAC 地址 MAC Address
 
@@ -50,7 +50,7 @@ MAC 地址是链路层在本地网络中识别接口的地址。
 ### 相关章节
 
 - [[03 链路层]]
-- [[概念/Router 与 Switch#Switch 交换机]]
+- [[COMP30650_NETWORK/概念/Router 与 Switch#Switch 交换机]]
 
 ## 5. 一个最重要的区分
 

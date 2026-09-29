@@ -243,3 +243,17 @@ Orange: Make juice
 - `instanceof` 判断支持接口
 - 向下转型 `(Edible) o` 需要先 instanceof 检查
 - 一个类可以同时继承父类并实现接口
+
+---
+
+## 相关链接
+
+- [[COMP30820_Java/00 索引|返回索引]]
+- [[05 类与对象]]
+- [[06 Thinking in Objects]]
+- [[07 继承与多态]]
+- [[09 抽象类与接口]]
+- [[13 OOP 理论选择题辨析]]
+- [[19 COMP30820 Sample Paper · 题目与答案解析]]
+- [[20 Java 期末 50 题提高篇]]
+- [[23 Java 期末复习整合版]]

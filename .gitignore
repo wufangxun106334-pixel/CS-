@@ -8,8 +8,9 @@ Thumbs.db
 .obsidian/workspace-mobile.json
 .obsidian/graph.json
 
-# Plugin runtime data
+# Plugin runtime data (including backups that may hold API keys)
 .obsidian/plugins/*/data.json
+.obsidian/plugins/*/data.json.*
 
 # Obsidian trash
 .trash/

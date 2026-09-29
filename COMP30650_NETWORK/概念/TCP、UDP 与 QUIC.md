@@ -47,7 +47,8 @@ sequenceDiagram
 - 允许多个 segment 同时在途
 - 不必每发一个 segment 就停下来等 ACK
 - 这是 TCP 提升效率的核心手段之一
-![[Pasted image 20260427162355.png]]
+> [!warning] 原图缺失
+> `Pasted image 20260427162355.png` 未随笔记同步，此图内容已丢失。
 ### Flow Control
 
 - 目标是让 sender 不要压垮 receiver

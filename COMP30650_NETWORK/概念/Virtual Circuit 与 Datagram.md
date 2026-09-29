@@ -48,7 +48,7 @@
 ## 5. 对应章节
 
 - [[04 网络层]]
-- [[概念/Routing、Forwarding 与 Longest Prefix Match]]
+- [[COMP30650_NETWORK/概念/Routing、Forwarding 与 Longest Prefix Match]]
 
 ## 6. 易错点辨析
 

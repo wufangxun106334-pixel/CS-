@@ -19,5 +19,5 @@ tags: [COMP47350, Index]
 | [[08_Visualisation_and_Experiment_Design\|第八章]]    | W4, W7  | 可视化图表类型、Python绘图代码、过拟合/欠拟合、CV vs Split、小样本陷阱                                                                           |
 | [[09_Logistic_Regression_Advanced\|第九章]]           | **W9**  | Log-Loss/Cross-Entropy、MLE最大似然估计、Odds/Log-Odds推导与系数解释、Softmax多分类、C参数正则化                                                |
 | [[10_Experiment_Design_and_Quiz\|第十章]]             | W7, W11 | 偏差-方差权衡(Bias-Variance Tradeoff)、模型比较方法论、随机种子、74道Quiz核心概念速查                                                             |
-| [[11_Compiled_Quiz_Questions_Source_Review\|第十一章]] | W11     | 按 `Compiled Quiz Questions with Answers.pdf` 原题库直接整理的总复习笔记，适合考前速记                                                      |
+| [[Mock test解析\|第十一章]] | W11     | 按 `Compiled Quiz Questions with Answers.pdf` 原题库直接整理的总复习笔记，适合考前速记                                                      |
 | [[12_Scaling_and_Regularization_Comparison\|第十二章]] | W5-W11  | 标准化、归一化、正则化的概念区别、适用场景、公式、考试陷阱                                                                                          |

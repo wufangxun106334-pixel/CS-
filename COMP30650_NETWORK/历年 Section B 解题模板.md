@@ -4,6 +4,8 @@
 
 ## 1. Internet Checksum
 
+来源定位：FIN 21/22 Q1(a)；2324 Q3A；2425 Q2A；sample 2026 Q7；link-layer error detection slides discuss checksum / CRC.
+
 步骤：
 
 1. 把数据写成 16-bit words。
@@ -32,6 +34,8 @@ checksum = ~53f2 = ac0d
 
 ## 2. CRC
 
+来源定位：sample 2026 Q8；link-layer CRC slides.
+
 步骤：
 
 1. 用 generator 对 received bit string 做 modulo-2 division。
@@ -50,6 +54,8 @@ remainder = 1100
 remainder 非 0，所以 likely error。
 
 ## 3. Hamming Distance
+
+来源定位：FIN 21/22 Q1(f)；2425 Q3A；sample 2026 Q6；link-layer coding slides discuss Hamming Distance.
 
 步骤：
 
@@ -70,6 +76,8 @@ remainder 非 0，所以 likely error。
 最小 `HD = 3`，所以可检测 `2` 位，可纠正 `1` 位。
 
 ## 4. Hamming Code Decode
+
+来源定位：2223 Q1E；2324 Q1B；link-layer Hamming Code slides.
 
 7-bit Hamming Code 常用位置：
 
@@ -104,6 +112,8 @@ original data = 1010 0110
 ```
 
 ## 5. Delay / Latency
+
+来源定位：FIN 21/22 Q1(d)；2223 Q3C；2324 Q2C；2425 Q1B；sample 2026 Q9；network basics / review slides discuss latency and propagation delay.
 
 公式：
 
@@ -155,7 +165,7 @@ BDP(bytes) = 5,000,000 / 8 = 625,000 bytes
            ≈ 625 KB
 ```
 
-考试写法：
+考试写法
 
 ```text
 The bandwidth-delay product is the amount of data that can be in transit on the link.
@@ -163,6 +173,8 @@ To fully utilise the link, the sender window should be at least the BDP.
 ```
 
 ## 6. Subnet / Prefix
+
+来源定位：2223 Section A Q16；2425 Section A Q1；sample 2026 Q12；network-layer addressing slides.
 
 公式：
 
@@ -190,6 +202,8 @@ range = 192.160.0.0 - 192.175.255.255
 
 ## 7. Longest Prefix Match
 
+来源定位：2223 Section A Q1；2425 Q2B；network-layer forwarding slides.
+
 步骤：
 
 1. 找出所有匹配 destination IP 的 prefixes。
@@ -204,6 +218,8 @@ range = 192.160.0.0 - 192.175.255.255
 | `8.8.8.8`      | default route                |
 
 ## 8. NAT Table
+
+来源定位：2223 Q1B；2425 Q1A；network-layer NAT slides.
 
 出站：
 
@@ -234,6 +250,8 @@ incoming after NAT:
 
 ## 9. Per-hop IP / MAC / Port
 
+来源定位：2223 Q3E；2324 Q3E；bigger-picture slides discuss per-hop MAC changes.
+
 规则：
 
 - Source/Destination Port 端到端不变，除非 NAT。
@@ -260,7 +278,7 @@ incoming after NAT:
 
 IP addresses and MAC addresses are both used to identify devices in computer networks, but they work at different layers and have different purposes.
 
-An **IP** address is a **logical** address used at the **network** layer. Its purpose is to identify a device's location in an IP network and allow packets to be routed across different networks. **Routers** use **destination IP** addresses and **forwarding tables** to decide the **next hop** for a packet. For example, when a host sends data to a **remote server**, the destination IP address tells the network **where** the packet should ultimately go.
+An **IP** address is a **logical** address used at the **network** layer. Its purpose is to identify a device's location in an IP network and allow packets to be routed across different networks. **Routers** use **destination IP** addresses and **forwarding tables** to decide the **next hop** for a packet. For example, when a **host** sends data to a **remote server**, the destination IP address tells the network **where** the packet should ultimately go.
 
 A **MAC** address is a **physical** or **link-layer** address assigned to a network interface card. Its purpose is to deliver frames within the **local** **network** or local link. **Switches** use MAC addresses to forward Ethernet **frames** to the correct **port** inside a LAN.
 
@@ -321,7 +339,7 @@ sequenceDiagram
 
 ARP is used to **map** an IP address to a MAC address on the local network. **IP** is used for **network-layer** addressing, but **Ethernet** needs a **MAC** **address** to send a frame on the local link.
 
-The sender first checks its **ARP cache**. If no entry exists, it **broadcasts an ARP Request** asking "Who has this IP?" The **device** with that IP replies with its **MAC address**. The sender stores the **IP-to-MAC** **mapping** in its **ARP cache** and then sends the Ethernet **frame** to that MAC address.
+The **sender** first checks its **ARP cache**. If no entry exists, it **broadcasts an ARP Request** asking "Who has this IP?" The **device** with that IP replies with its **MAC address**. The sender stores the **IP-to-MAC** **mapping** in its **ARP cache** and then sends the Ethernet **frame** to that MAC address.
 
 If the destination is on **remote** network, the host uses **ARP** to find the **default gateway's MAC** address, not the remote host's MAC address.
 
@@ -341,6 +359,8 @@ IP tells where the packet should go; ARP finds the next-hop MAC for the local fr
 ```
 
 ## 10. Switch Backward Learning
+
+来源定位：2223 Q2D；2425 Q1C；FIN 21/22 Q3(a)；L10 switch backward learning slides.
 
 步骤：
 
@@ -425,15 +445,17 @@ flowchart LR
 
 ## 10A. Hub / Switch / Router
 
+来源定位：FIN 21/22 Q1(c)；2324 Q1D；link-layer and network-layer device slides.
+
 简答模板：
 
 `A hub, a switch, and a router have different roles in networking.`
 
-`A hub` is a simple **physical** **layer** device. It does not **examine** **addresses** or make **forwarding** **decisions**. When it receives a signal, it repeats/floods it to all **connected** **ports**.  is inefficient because all devices receive the traffic.
+`A **hub**` is a simple **physical** **layer** device. It does not **examine** **addresses** or make **forwarding** **decisions**. When it receives a signal, it repeats/floods it to all **connected** **ports**.  is inefficient because all devices receive the traffic.
 
-A switch operates mainly at the **data link layer**. It forwards Ethernet frames using **MAC addresses**. Through **backward learning**, it learns which MAC address is reachable on which port, and then **forwards** frames only to the correct port when possible. This makes LAN communication more efficient than a hub.
+A **switch** operates mainly at the **data link layer**. It forwards Ethernet frames using **MAC addresses**. Through **backward learning**, it learns which MAC address is reachable on which port, and then **forwards** frames only to the correct port when possible. This makes **LAN** **communication** more efficient than a hub.
 
-`A router` operates at the **network** layer. It connects **different** **networks** and forwards **packets** using **IP addresses** and a **routing table**. A router **decides** the next **hop** for packets traveling between networks, while switches mainly handle communication inside a local network.
+`A router` operates at the **network** layer. It connects **different** **networks** and forwards **packets** using **IP addresses** and a **routing table**. A router **decides** the next **hop** for packets traveling between **networks**, while switches mainly handle communication inside a local network.
 
 图示：
 
@@ -462,6 +484,8 @@ LAN 1 ---- Router ---- LAN 2 / Internet
 `In summary, a hub repeats signals to all ports, a switch forwards frames within a LAN using MAC addresses, and a router forwards packets between different networks using IP addresses.`
 
 ## 11. ARQ Stop-and-Wait
+
+来源定位：2223 Q1C；2324 Q2A；2425 Q3B；sample 2026 Q10；L9 ARQ / Stop-and-Wait slides.
 
 Frame lost：
 
@@ -523,6 +547,8 @@ In summary, stop-and-wait ARQ sends one frame at a time, relies on **error** **d
 
 ## 12. DNS Resolution
 
+来源定位：2324 Q1C；2425 Q2C；L16 DNS resolution slides.
+
 流程：
 
 1. client asks local **nameserver**。
@@ -532,15 +558,17 @@ In summary, stop-and-wait ARQ sends one frame at a time, relies on **error** **d
 5. ask **TLD serve**r。
 6. TLD returns **authoritative** **referral**。
 7. ask **authoritative server**。
-8. authoritative returns record。
-9. local nameserver caches and returns answer to client。
+8. authoritative returns **record**。
+9. **local nameserver caches** and returns answer to client。
 
 关键词：
 
 - recursive query：client 希望 local nameserver 给最终答案。
 - iterative query：server 返回 referral，让查询者继续问下一层。
 
-## [[[13. Wireless Hidden / Exposed Node]]]
+## 13. Wireless Hidden / Exposed Node
+
+来源定位：2223 Q1D；2425 Q2D；L9 wireless hidden/exposed terminal slides.
 
 Hidden node：
 
@@ -561,6 +589,8 @@ C hears B transmitting and incorrectly assumes it must stay silent.
 > However, C’s transmission to D would not interfere with B’s transmission to A.  
 > As a result, communication that could happen in parallel is unnecessarily blocked, reducing throughput.
 ## 14. Symmetric vs Asymmetric Encryption
+
+来源定位：2324 Q1A；2425 Q3D；L19/L20 network security slides.
 
 **Symmetric-key cryptography** uses the **same** **secret** key for encryption and decryption. It is **fast** and suitable for **large data**, but **key distribution is difficult** because both sides must share the secret securely.
 
@@ -587,13 +617,15 @@ TLS 组合：
 
 ## 15. MTU / Fragmentation
 
+来源定位：2223 Q2C；2425 Q1D；L12 packet size problem / fragmentation / Path MTU Discovery slides.
+
 重点：
 
 - Ethernet MTU 常见约 `1500 bytes`。
 - IPv4 router 可以 fragment，但代价高。
 - IPv6 router 不 fragment，源端负责合适大小。
 - Path MTU Discovery 用 ICMP/ICMPv6 反馈找到路径最小 MTU。
-	**Path MTU Discovery** is a method used to find the smallest MTU along the path between sender and receiver. The sender sets the **DF (Don’t Fragment)** bit in **packets**. If a packet is too large for a link on the path, the **router** drops it and **sends** back an **ICMP “Fragmentation Needed”** message. The **sender** then reduces **the** **packet** size and tries again until it finds the **largest** size that can pass without fragmentation.
+	**Path MTU Discovery** is a method used to find the smallest MTU along the path between sender and receiver. The **sender** sets the **DF (Don’t Fragment)** bit in **packets**. If a packet is too large for a link on the path, the **router** drops it and **sends** back an **ICMP “Fragmentation Needed”** message. The **sender** then reduces **the** **packet** size and tries again until it finds the **largest** size that can pass without fragmentation.
 	
 答题角度：
    Fragmentation adds **processing** **overhead** at **routers** and **reassembly** **overhead** at the **destination** host.
@@ -602,6 +634,8 @@ TLS 组合：
 - network design：现代网络更偏向让 source 使用 Path MTU Discovery。
 
 ## 16. IPv6 Tunnel / Narrow Waist / QAM
+
+来源定位：FIN 21/22 Q2(a)(b)(d)；network-layer IPv4/IPv6 and physical-layer QAM slides.
 
 IPv6 tunnel：
 
@@ -689,7 +723,7 @@ However, higher-order QAM has **constellation** points closer together, so it is
 
 ## 17. VLAN Port Assignment
 
-来源定位：`L20 Network Security` 提到 VLAN/security segmentation；Final 2223 Q1A 是按访问限制给 switch ports 分配 VLAN labels。
+来源定位：2223 Q1A；`L20 Network Security` 提到 VLAN/security segmentation；VLAN / logical network segmentation notes.
 
 答题思路：
 
@@ -701,11 +735,11 @@ However, higher-order QAM has **constellation** points closer together, so it is
 
 通用模板：
 
-```text
-VLANs create separate logical LANs on the same physical switch. Devices in the same VLAN can communicate at Layer 2 as if they are on the same LAN. Devices in different VLANs are isolated unless routing or firewall rules allow inter-VLAN communication.
 
-To assign VLAN labels, group together only the ports whose hosts are allowed to communicate. Ports that must be isolated from each other should be placed in different VLANs. If a host group needs Internet access, its VLAN must also have access to the router/default gateway.
-```
+VLANs create separate **logical** LANs on the **same** physical **switch**. Devices in the same VLAN can communicate at Layer 2 as if they are on the same LAN. Devices in different VLANs are isolated unless routing or firewall rules allow inter-VLAN communication.
+
+To assign VLAN labels, group together only the ports whose hosts are allowed to communicate. Ports that **must** be **isolated** from each other should be placed in **different** **VLANs**. If a **host** group needs Internet access, its VLAN must also have access to the router/default gateway.
+
 
 评分关键词：
 
@@ -718,13 +752,13 @@ To assign VLAN labels, group together only the ports whose hosts are allowed to 
 
 ## 18. Link-State Packet
 
-来源定位：`L14 The Network Layer`，`The Role of Link State Packets`，Link-State approach。
+来源定位：2223 Q2A；FIN 21/22 Q4(a)；`L14 The Network Layer`，`The Role of Link State Packets`，Link-State approach。
 
 简答模板：
 
-The main purpose of LSP flooding is to let each router build a complete view of the network, run shortest-path computation, and then create a **forwarding table** for efficient packet forwarding.
+The main purpose of LSP **flooding** is to let each **router** build a complete view of the **network**, run shortest-path computation, and then create a **forwarding table** for efficient packet forwarding.
 
-A Link-State Packet is used by a **router** in a link-state routing **algorithm** to **describe** its local **view** **of** the network **topology**. It tells other routers which **neighbours** it is connected to and the **cost** of each link.
+A Link-State Packet is used by a **router** in a **link-state routing** **algorithm** to **describe** its local **view** **of** the network **topology**. It tells other routers which **neighbours** it is connected to and the **cost** of each link.
 
 Each router **floods** its Link-State Packets through the network. After receiving LSPs from other routers, every **router** can build a **map** of the **network topology.** It then runs a **shortest** path algorithm, such as **Dijkstra**'s algorithm, to compute its own **forwarding** table.
 ```
@@ -745,7 +779,7 @@ Each router **floods** its Link-State Packets through the network. After receivi
 
 ## 19. Routing vs Forwarding
 
-来源定位：`L11 the Network Layer`，`Routing V Forwarding`。
+来源定位：2223 Q3A；`L11 the Network Layer`，`Routing V Forwarding`。
 
 简答模板：
 
@@ -770,16 +804,16 @@ In short, routing builds the table; forwarding uses the table.
 
 ## 20. Baseband vs Passband Modulation
 
-来源定位：`L5 The Physical Layer`，`PASSBAND MODULATION`，carrier signal，QAM。
+来源定位：2223 Q3B；2425 Q3C；`L5 The Physical Layer`，`PASSBAND MODULATION`，carrier signal，QAM。
 
 简答模板：
 
 
 Baseband transmission sends the digital signal directly over the **medium** using **signal levels** or **transitions** to represent bits. Examples include **NRZ, NRZI, Manchester encoding, and 4B/5B**. It is common when the medium can carry the baseband signal directly.
 
-Passband modulation uses a carrier signal and modifies properties of that carrier to carry data. The carrier is an oscillating signal at a chosen frequency. The sender can vary amplitude, frequency, or phase. This is useful when baseband signals do not propagate well on a medium, such as wireless or some fibre/cable systems.
+**Passband** modulation uses a **carrier** signal and **modifies** properties of that carrier to carry data. The carrier is an **oscillating** signal at a chosen frequency. The **sender** can vary **amplitude**, **frequency**, or **phase**. This is useful when **baseband** signals do not **propagate** well on a **medium**, such as wireless or some fibre/cable systems.
 
-The key difference is that baseband directly represents bits as signal changes, while passband first places the information onto a carrier signal.
+The key difference is that **baseband directly represents** bits as signal changes, while **passband** first places the information onto a **carrier signal.**
 
 
 可画图说明：
@@ -799,15 +833,15 @@ Phase      -> horizontal shift of waveform
 
 ## 21. Public Key Encryption Operation
 
-来源定位：`L19 Network Security`，`PUBLIC KEY (ASYMMETRIC) ENCRYPTION`。
+来源定位：2223 Q3D；FIN 21/22 Q4(d)；`L19 Network Security`，`PUBLIC KEY (ASYMMETRIC) ENCRYPTION`。
 
 简答模板：
 
-Public key encryption uses a pair of keys: a public key and a private key. The public key can be shared openly, while the private key is kept secret by its owner.
+Public key encryption uses a pair of keys: a public key and a private key. The public key can be shared openly, while the **private** key is kept secret by its **owner**.
 
-If Alice wants to send a confidential message to Bob, Alice encrypts the message using Bob's public key. Only Bob can decrypt it, because only Bob has the matching private key.
+If **Alice** wants to **send** a confidential message to Bob, Alice encrypts the message using **Bob**'s public key. Only Bob can **decrypt** it, because only Bob has the matching private key.
 
-This helps with key distribution because Alice does not need to already share a secret key with Bob. However, Alice must be sure that the public key really belongs to Bob. This is why **certificates** and **PKI** are needed in systems such as HTTPS/TLS.
+This helps with key **distribution** because Alice does not need to already share a secret key with Bob. However, Alice must be sure that the public key really belongs to Bob. This is why **certificates** and **PKI** are needed in systems such as HTTPS/TLS.
 
 
 图示：
@@ -821,22 +855,22 @@ Bob -- decrypt with Bob's private key --> plaintext
 弱点：
 
 - slower than symmetric encryption
-- must authenticate public key
+- must **authenticate** public key
 - often used to exchange a session key, then symmetric encryption handles bulk data
 
 ## 22. NAT Box in a Home Network
 
-来源定位：`L13 The Network Layer`，`NAT is widely used at the edges of the network, e.g., homes`。
+来源定位：FIN 21/22 Q1(b)；`L13 The Network Layer`，`NAT is widely used at the edges of the network, e.g., homes`。
 
 简答模板：
 
-```text
-A Network Address Translation box is commonly used at the edge of a home network. It allows multiple private devices in the home to share one public IPv4 address when communicating with the Internet.
 
-Inside the home, devices use private IP addresses such as 192.168.x.x. When an internal host sends traffic to the Internet, the NAT box rewrites the source private IP address and port to its public IP address and a chosen external port. It stores this mapping in a NAT table.
+A Network Address Translation **box** is commonly used at the **edge** of a home network. It allows **multiple** **private** devices in the home to share **one** **public** **IPv4** address when communicating with the Internet.
+
+Inside the home, devices use private IP addresses such as 192.168.x.x. When an internal **host** sends traffic to the Internet, the NAT box rewrites the source private IP address and port to its public IP **address** and a chosen **external** port. It stores this mapping in a NAT table.
 
 When the reply comes back from the Internet, the NAT box uses the external port in the NAT table to find the correct internal host, then rewrites the destination address and port back to the private address and port.
-```
+
 
 图示：
 
@@ -863,12 +897,12 @@ Internet server
 
 ## 23. Full-duplex vs Half-duplex
 
-来源定位：`L10 The Link Layer` mentions full-duplex switch ports；sample/2122 考 half-duplex。
+来源定位：FIN 21/22 Q1(e)；sample 2026 Q1；`L10 The Link Layer` mentions full-duplex switch ports。
 
 简答模板：
 
 ```text
-A half-duplex link allows communication in both directions, but not at the same time. Only one side can transmit at a time. A walkie-talkie is a typical example.
+A half-duplex link allows communication in **both** directions, but not at the same time. Only one side can transmit at a time. A walkie-talkie is a typical example.
 
 A full-duplex link allows communication in both directions at the same time. Modern switched Ethernet links are commonly full-duplex.
 
@@ -884,23 +918,19 @@ The main difference is simultaneous transmission: full-duplex supports it, half-
 
 ## 24. DNS Spoofing
 
-来源定位：`L20 Network Security`，`DNS SPOOFING`，DNSSEC。
+来源定位：FIN 21/22 Q3(b)；`L20 Network Security`，`DNS SPOOFING`，DNSSEC。
 
 简答模板：
 
 
-DNS spoofing is an attack where an attacker causes a DNS resolver or client to accept a false DNS response. The result is that a **==domain==** name is mapped to the wrong IP address, often one controlled by the attacker.
+**DNS spoofing** is an attack where a fake **DNS** reply is accepted by a resolver or client, causing a **domain** name to **resolve** to the **wrong IP address**.
 
-Without DNS security, DNS replies are not strongly **authenticated**. An attacker may send a fake DNS reply that appears to come from the correct authoritative name server. If the fake reply arrives before the real reply and matches expected fields such as the query, it may be accepted and cached.
-
-This can redirect users to a **malicious** server even though they typed the correct domain name.
-```
+This can **redirect** users to a **malicious** server even when they type the correct domain name.
 
 DNSSEC 如何帮助：
 
-```text
-DNSSEC adds digital signatures to DNS records. A resolver can verify the signature using DNS public keys and a chain of trust. This helps ensure that the DNS binding returned is authentic and has not been tampered with.
-```
+
+DNSSEC adds digital **signatures** to DNS **records**. A **resolver** can verify the signature using DNS **public** keys and a chain of **trust**. This helps ensure that the DNS mapping from domain name to IP address returned is **authentic** and has not been tampered with.
 
 评分关键词：
 
@@ -912,17 +942,17 @@ DNSSEC adds digital signatures to DNS records. A resolver can verify the signatu
 
 ## 25. TCP Three-Way Handshake
 
-来源定位：`L15 The Transport Layer`，`THREE-WAY HANDSHAKE`。
+来源定位：FIN 21/22 Q3(c)；`L15 The Transport Layer`，`THREE-WAY HANDSHAKE`。
 
 简答模板：
 
-```text
+
 TCP uses a three-way handshake to establish a connection between an active opener, usually the client, and a passive opener, usually the server.
 
-First, the client sends a SYN segment with an initial sequence number x. Second, the server replies with SYN+ACK, choosing its own initial sequence number y and acknowledging x+1. Third, the client sends ACK y+1 back to the server.
+First, the client sends a **SYN** segment with an initial **sequence** number x. Second, the server replies with **SYN+ACK**, choosing its own initial **sequence** number **y** and **acknowledging** x+1. Third, the client sends **ACK y+1** back to the server.
 
 After these three steps, both sides know that the other side is reachable and both initial sequence numbers have been synchronized. The connection state is established and data transfer can begin.
-```
+
 
 图示：
 
@@ -935,23 +965,23 @@ Client                              Server
 
 为什么需要：
 
-- confirms bidirectional reachability
-- synchronizes sequence numbers
+- confirms **bidirectional** reachability
+- **synchronizes** **sequence** numbers
 - establishes TCP state
 - robust against delayed duplicates
 
 ## 26. Flow Control
 
-来源定位：`L15 The Transport Layer`，`FLOW CONTROL`。
+来源定位：FIN 21/22 Q4(c)；`L15 The Transport Layer`，`FLOW CONTROL`。
 
 简答模板：
 
 
-Flow control prevents the sender from **overwhelming** the receiver. A receiver has **limited buffer** space. If the sender transmits too quickly, the receiver's buffer may fill and data may be dropped.
+Flow control prevents the **sender** from **overwhelming** the receiver. A **receiver** has **limited buffer** space. If the **sender** transmits too quickly, the **receiver**'s **buffer** may fill and data may be dropped.
 
-TCP flow control uses a **receive window** advertised by the receiver. The receiver tells the sender how much buffer space is available. The sender must keep the amount of **unacknowledged** data within this advertised window.
+TCP flow control uses a **receive window** advertised by the **receiver**. The receiver tells the sender how much **buffer** space is available. The **sender** must keep the amount of **unacknowledged** data within this advertised window.
 
-As the application reads data from the receive buffer, more buffer space becomes available, and the receiver can advertise a larger window. If the buffer is **full**, the receiver may advertise a zero or small window, causing the sender to slow down or stop temporarily.
+As the **application** reads data from the **receive buffer**, more buffer space becomes available, and the **receiver** can advertise a **larger** window. If the buffer is **full**, the receiver may advertise a **zero** or small window, causing the sender to slow down or stop temporarily.
 ```
 
 图示：
@@ -976,7 +1006,7 @@ Sender                              Receiver
 
 ## 27. Private Key Weakness / Public Key Solution
 
-来源定位：`L19 Network Security`，`Symmetric encryption is problematic`，`Public Key Encryption`。
+来源定位：FIN 21/22 Q4(d)；`L19 Network Security`，`Symmetric encryption is problematic`，`Public Key Encryption`。
 
 这里的 `private key encryption` 在旧题语境里通常指 symmetric/private shared key encryption。
 
@@ -1019,14 +1049,14 @@ Number of possible codewords = 2^16 = 65536
 
 ## 29. Star Topology
 
-来源定位：`L2 Network Basics` topology。
+来源定位：sample 2026 Q2；`L2 Network Basics` topology。
 
 简答模板：
 
 ```text
 In a star topology, devices are connected to a central hub or switch. Most traffic passes through this central device.
 
-Advantages are that it is easy to add or remove nodes, and faults can often be isolated to one link. The main disadvantage is dependence on the central device: if the central hub or switch fails, the network can be seriously affected.
+Advantages are that it is easy to **add** or remove nodes, and faults can often be isolated to one link. The main disadvantage is dependence on the **central** device: if the central hub or switch fails, the network can be seriously affected.
 ```
 
 高频判断：
@@ -1043,14 +1073,14 @@ Advantages are that it is easy to add or remove nodes, and faults can often be i
 
 ## 30. FDM
 
-来源定位：`L9 The Link Layer`，`Frequency Division Multiplexing (FDM)`。
+来源定位：sample 2026 Q11；`L9 The Link Layer`，`Frequency Division Multiplexing (FDM)`。
 
 简答模板：
 
 ```text
 Frequency Division Multiplexing is a way for multiple users or signals to share the same physical medium by dividing the available bandwidth into separate frequency bands.
 
-Each user gets a different frequency range and can transmit at the same time at a lower rate. Examples include radio and TV channels.
+Each user gets a different **frequency** range and can transmit at the same time at a lower rate. Examples include radio and TV channels.
 ```
 
 与 TDM 对比：
@@ -1068,16 +1098,16 @@ In FDM, users/devices share bandwidth.
 
 ## 31. DHCP Discover
 
-来源定位：`L12 The Network Layer` DHCP addressing；sample 2026 Q13。
+来源定位：sample 2026 Q13；`L12 The Network Layer` DHCP addressing.
 
 简答模板：
 
-```text
-DHCP is used to automatically configure a host with network settings such as an IP address, subnet mask, default gateway, and DNS server.
+
+DHCP is used to automatically **configure** a host with network settings such as an **IP** address, subnet **mask**, **default** gateway, and **DNS** server.
 
 When a host first joins a network, it may not yet have an IPv4 address. Therefore, the source IPv4 address in a DHCP Discover message is 0.0.0.0. The message is usually broadcast so that a DHCP server on the local network can receive it.
-```
 
+IPV4
 DORA：
 
 ```text
@@ -1090,10 +1120,11 @@ Discover -> Offer -> Request -> Acknowledge
 - destination IPv4 address：broadcast, often `255.255.255.255`
 - DHCP uses UDP
 - server port `67`, client port `68`
-
+IPV6:
+**DHCPv6** is used by an IPv6 host to obtain network configuration such as an **IPv6 address**, **prefix**, **DNS server**, and other options. The client first sends a **Solicit** message to find DHCPv6 servers. The server replies with **Advertise**. The client then sends **Request**, and the server returns **Reply** with the assigned configuration.
 ## 32. ICMP
 
-来源定位：`L12 The Network Layer`，`IP ERRORS - INTERNET CONTROL MESSAGE PROTOCOL (ICMP)`；`Networks_and_Internet_Sys_(Conv)_2324 (1).pdf` Question 3C。
+来源定位：2324 Q3C；2223 Section A Q4；`L12 The Network Layer`，`IP ERRORS - INTERNET CONTROL MESSAGE PROTOCOL (ICMP)`。
 
 题目常见问法：
 
@@ -1101,11 +1132,11 @@ Discover -> Offer -> Request -> Acknowledge
 
 简答模板：
 
-```text
-ICMP, Internet Control Message Protocol, is a network-layer support protocol used for error reporting and diagnostic/control messages. It is not used to carry normal application data. Instead, it helps IP report problems that occur while packets are being forwarded.
 
-When a router or destination host cannot process or forward an IP packet, it may send an ICMP message back to the source. The ICMP message tells the sender what went wrong, for example that the destination is unreachable, the packet is too large for the next link, or the packet's TTL has expired.
-```
+ICMP, Internet Control Message Protocol, is a **network**-layer support protocol used for **error** reporting and **diagnostic**/control messages. It is not used to carry normal application data. Instead, it helps IP report **problems** that occur while packets are being forwarded.
+
+When a **router** or destination **host** cannot **process** or forward an IP **packet**, it may send an ICMP message **back** to the **source**. The ICMP message tells the sender what went wrong, for example that the **destination** is **unreachable**, the packet is too large for the next link, or the packet's TTL has expired.
+
 
 常见场景：
 
@@ -1135,7 +1166,7 @@ ICMP is part of the network layer around IP. It helps the network report errors 
 
 ## 33. Proxy Caching / CDN
 
-来源定位：`L17 The Application Layer`，`WEB CACHING`、`WEB PROXIES`、`CONTENT DELIVERY NETWORKS`；`Networks_and_Internet_Sys_(Conv)_2324 (1).pdf` Question 3D。
+来源定位：2324 Q3D；`L16/L17 The Application Layer`，`WEB CACHING`、`WEB PROXIES`、`CONTENT DELIVERY NETWORKS`。
 
 题目常见问法：
 
@@ -1143,22 +1174,29 @@ ICMP is part of the network layer around IP. It helps the network report errors 
 
 简答模板：
 
-```text
-Proxy caching means placing an intermediate proxy server between clients and external web servers. Clients send requests to the proxy. If the proxy already has a fresh cached copy of the requested object, it returns the object directly. If not, it fetches the object from the origin server, forwards it to the client, and may store a copy for future requests.
 
-Two benefits are lower latency for clients and reduced traffic to the origin server or external network. Because many users can share the same proxy cache, repeated requests for popular objects can be served locally. A proxy can also provide security checking or enforce organisational access policies.
+**Proxy** caching means placing an **intermediate** proxy **server** between **clients** and external web **servers**. Clients send requests to the proxy. If the proxy already has a fresh **cached** **copy** of the requested object, it returns the object directly. If not, it **fetches** the object from the **origin** **server**, forwards it to the client, and may **store** a **copy** for future requests.
 
-A CDN is different because it is a distributed network of replica servers placed across the Internet. A proxy cache usually serves one organisation, ISP, or local client group, while a CDN deliberately replicates popular content at many locations and uses mechanisms such as DNS mapping to send each client to a nearby replica.
-```
+Two benefits are **lower latency** for clients and **reduced traffic** to the origin server or external network. Because many users can share the same proxy cache, **repeated requests** for popular objects can be **served** **locally**. A proxy can also provide **security** **checking** or enforce organisational access policies.
+
+A CDN is different because it is a **distributed** network of **replica** **servers** placed across the Internet. A proxy cache usually **serves** one organisation, **ISP**, or local client group, while a CDN deliberately replicates popular **content** at many **locations** and uses **mechanisms** such as DNS mapping to send each client to a nearby replica.
+
+简写:
+> **Proxy caching** stores **copies** of web objects in an **intermediate** proxy **server**. If the object is cached, the proxy returns it directly; otherwise, it **fetches** it from the **origin** server.
+>
+> It **reduces** **latency** and external network traffic by **serving** repeated requests **locally**.
+>
+> A **CDN** is different because it uses many distributed **replica** **servers** around the Internet, while a proxy cache usually serves one local organisation or network.
 
 对比表：
 
-| Item      | Proxy cache                                                  | CDN                                                                   |
-| --------- | ------------------------------------------------------------ | --------------------------------------------------------------------- |
-| Location  | intermediary near a client group / organisation / ISP        | many replicas distributed across the Internet                         |
-| Main idea | shared cache for clients using that proxy                    | large-scale content replication near users                            |
-| Scope     | local or organisational                                      | global / provider-managed                                             |
-| Benefits  | lower latency, less external traffic, security/policy checks | lower latency, reduced origin load, scalable popular content delivery |
+| Item      | Proxy cache                                                                  | CDN                                                                   |
+| --------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Location  | intermediary near a client group / organisation / ISP                        | many replicas distributed across the Internet                         |
+| Main idea | shared cache for clients using that proxy                                    | large-scale content replication near users                            |
+| Scope     | local or organisational                                                      | global / provider-managed                                             |
+| Benefits  | lower **latency**, less external **traffic**, **security**/policy **checks** | lower latency, reduced origin load, scalable popular content delivery |
+|           |                                                                              |                                                                       |
 
 评分关键词：
 

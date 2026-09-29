@@ -16,12 +16,12 @@ ARP 是整门课最典型的“跨层联系点”之一。
 
 它同时牵涉：
 
-- [[概念/IP 与 MAC 地址#IP 地址 IP Address]]
-- [[概念/IP 与 MAC 地址#MAC 地址 MAC Address]]
-- [[概念/OSI 与 TCP-IP 分层]]
-- [[概念/Router 与 Switch#Switch 交换机]]
-- [[概念/Router 与 Switch#Router 路由器]]
-- [[概念/DHCP]]
+- [[COMP30650_NETWORK/概念/IP 与 MAC 地址#IP 地址 IP Address]]
+- [[COMP30650_NETWORK/概念/IP 与 MAC 地址#MAC 地址 MAC Address]]
+- [[COMP30650_NETWORK/概念/OSI 与 TCP-IP 分层]]
+- [[COMP30650_NETWORK/概念/Router 与 Switch#Switch 交换机]]
+- [[COMP30650_NETWORK/概念/Router 与 Switch#Router 路由器]]
+- [[COMP30650_NETWORK/概念/DHCP]]
 
 ## 3. ARP 在哪一层
 

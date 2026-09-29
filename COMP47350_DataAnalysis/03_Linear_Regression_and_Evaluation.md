@@ -26,8 +26,11 @@ X_train_encoded = pd.get_dummies(X_train, columns=['Color', 'City'], drop_first=
 ## 2. 损失函数与参数求解
 模型的训练目标是寻找一组权重 $w$，使得预测误差最小。
 - **误差 (Residual/Error)**: $e_i = y_i - \hat{y}_i$
-- **SSE (Sum of Squared Errors, 误差平方和)**: $\sum (y_i - \hat{y}_i)^2$
+- **SSE (Sum of Squared Errors, 误差平方和/也叫剩余误差)**: $\sum (y_i - \hat{y}_i)^2$
+	**SST (**Total Sum of Squares**, 总误差,预测按照均值来)**: $\sum (y_i - \y_i)^2$
 - **MSE (Mean Squared Error, 均方误差)**: $\frac{1}{N} \sum (y_i - \hat{y}_i)^2$
+- R^2(模型解释了多少比例的波动)=1-SSE/SST (SSE是不能解释的剩余误差)
+- 
 -  **特点：**
 - 大误差会被平方放大
 - 对异常值更敏感
@@ -50,14 +53,14 @@ X_train_encoded = pd.get_dummies(X_train, columns=['Color', 'City'], drop_first=
 
 
 ### 2.1 闭式解 vs 梯度下降 (考点对比)
-| 对比维度 | 闭式解 / OLS | 梯度下降 (Gradient Descent) |
-|:---|:---|:---|
-| **原理** | 直接求 $W = (X^T X)^{-1} X^T Y$ | 迭代更新：$w := w - \alpha \cdot \nabla J(w)$ |
-| **数据量** | 适合小规模 ($n < 10000$) | 适合大规模数据 |
-| **特征维度** | $O(d^3)$ 矩阵求逆，高维极慢 | 线性复杂度 $O(d)$ 每次迭代 |
-| **是否要求闭式解** | 需要 $X^T X$ 可逆 (无完美共线性) | 不要求 |
-| **可迁移性** | 仅限线性回归 | **可迁移到其他可微模型** (逻辑回归、神经网络) |
-| **学习率 $\alpha$** | 不需要 | 需要调参，太大会发散，太小收敛慢 |
+| 对比维度             | 闭式解 / OLS                    | 梯度下降 (Gradient Descent)                  |
+| :--------------- | :--------------------------- | :--------------------------------------- |
+| **原理**           | 直接求 $W = (X^T X)^{-1} X^T Y$ | 迭代更新：$w := w - \alpha \cdot \nabla J(w)$ |
+| **数据量**          | 适合小规模 ($n < 10000$)          | 适合大规模数据                                  |
+| **特征维度**         | $O(d^3)$ 矩阵求逆，高维极慢           | 线性复杂度 $O(d)$ 每次迭代                        |
+| **是否要求闭式解**      | 需要 $X^T X$ 可逆 (无完美共线性)       | 不要求                                      |
+| **可迁移性**         | 仅限线性回归                       | **可迁移到其他可微模型** (逻辑回归、神经网络)               |
+| **学习率 $\alpha$** | 不需要                          | 需要调参，太大会发散，太小收敛慢                         |
 
 > [!question] 为什么梯度下降在大数据时代更受欢迎？
 > 1. 当特征数量 $d$ 很大时，矩阵求逆的 $O(d^3)$ 复杂度不可接受
@@ -89,7 +92,9 @@ df['log_feature'] = np.log1p(df['feature'])  # log(1+x) 处理偏态分布
 ## 3. 回归模型评估指标与推导
 ### 3.1 常用评估指标对比
 - **MAE (Mean Absolute Error)**: $\frac{1}{N} \sum |y_i - \hat{y}_i|$。业务解释性强，直接反映平均误差多少。
+
 - **RMSE (Root Mean Squared Error)**: $\sqrt{MSE}$   (MSE=$\frac{1}{N} \sum (y_i - \hat{y}_i)^2$)。**核心考点**：RMSE 总是 $\ge$ MAE。因为公式中先对误差进行平方，这会**极大地惩罚 (penalize heavily) 那些非常大的异常误差**。如果一个模型偶尔犯巨大的错误，它的 RMSE 会非常高。
+
 - **$R^2$ (R-squared / 决定系数)**: 
   取值通常在 $[0, 1]$。代表模型解释了目标变量方差的百分比。如果 $R^2 = 0.85$，说明模型解释了目标变量 85% 的波动 (The model explains 85% of the variance in the target variable)。
 
@@ -122,7 +127,8 @@ print(f"MAE: {mae}, RMSE: {rmse}, R2: {r2}")
 ## 4. 过拟合 (Overfitting) 与外推风险 (Extrapolation)
 - **外推陷阱 (Extrapolation)**: 如果训练集的 $x$ 在 `[100, 1000]` 之间，利用该模型预测 $x=10000$ 是极其危险的，因为现实世界关系往往不是永远线性的。
 - 
-线性回归的常见问题包括过拟合、欠拟合、多重共线性 Multicollinearity、异常值影响Outliers、非线性关系、异方差Heteroscedasticity、残差自相关## Autocorrelation、特征尺度差异、数据泄露和外推风险## Extrapolation。其原因通常是样本过少、特征相关性高、异常值存在、真实关系不满足线性假设，或数据预处理与评估流程不当。
+线性回归的常见问题包括过拟合、欠拟合、多重共线性 Multicollinearity、异常值影响Outliers、非线性关系、异方差Heteroscedasticity、残差自相关## Autocorrelation、特征尺度差异、数据泄露和外推风险## Extrapolation。
+	其原因通常是样本过少、特征相关性高、异常值存在、真实关系不满足线性假设，或数据预处理与评估流程不当。
 ### 4.1 正则化 (Regularization) 详解
 
 **核心思想**：在损失函数中加入一个**惩罚项**，限制模型参数的大小（复杂度），迫使模型在"拟合训练数据"和"保持模型简单"之间取得平衡。
@@ -233,13 +239,13 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01,
 
 除了 L1/L2 惩罚项，还有多种其他正则化方法，本质目的相同：**提升模型在未知数据上的泛化能力**。
 
-| 方法 | 说明 |
-|:---|:---|
-| **Dropout** | 训练时随机丢弃一部分神经元，防止神经元间的共适应 |
-| **Early Stopping** | 验证集 loss 不再下降时提前停止训练 |
-| **Data Augmentation** | 扩增训练数据（旋转、裁剪、加噪声等），增加数据多样性 |
+| 方法                      | 说明                                     |
+| :---------------------- | :------------------------------------- |
+| **Dropout**             | 训练时随机丢弃一部分神经元，防止神经元间的共适应               |
+| **Early Stopping**      | 验证集 loss 不再下降时提前停止训练                   |
+| **Data Augmentation**   | 扩增训练数据（旋转、裁剪、加噪声等），增加数据多样性             |
 | **Batch Normalization** | 归一化层输出，有小幅正则化副作用（因为 mini-batch 统计量含噪声） |
-| **DropConnect** | 随机断开权重连接（比 Dropout 更细粒度） |
+| **DropConnect**         | 随机断开权重连接（比 Dropout 更细粒度）               |
 
 ### 4.2 共线性 (Collinearity / Multicollinearity)
 当两个或多个特征高度相关时，会引发共线性问题：

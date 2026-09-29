@@ -199,6 +199,7 @@ df['Age_Binned'] = pd.qcut(df['Age'], q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
 
 ```python
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 X = df.drop('Target', axis=1)
 y = df['Target']
@@ -206,5 +207,16 @@ y = df['Target']
 # ✅ 正确做法: 先划分，再对训练集 fit_transform，对测试集仅 transform
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y)
 
+# 正确的缩放流程
+scaler = StandardScaler()  # 或 MinMaxScaler()
+X_train_scaled = scaler.fit_transform(X_train)  # fit + transform: 用训练集计算 μ, σ 并转换
+X_test_scaled = scaler.transform(X_test)        # 仅 transform: 用训练集的 μ, σ 转换测试集
+
 # ⚠️ 错误的做法: 先缩放/编码再划分 → 测试集信息泄露到训练集！
+# ❌ 错误: scaler.fit_transform(X) → train_test_split(...)
 ```
+
+> [!warning] 为什么测试集只能 transform，不能 fit_transform？
+> - **fit_transform(X_train)**: 用训练集计算均值 μ 和标准差 σ，然后转换训练集
+> - **transform(X_test)**: 用**训练集的 μ 和 σ**转换测试集，而不是重新计算
+> - 如果对测试集也 fit_transform，测试集的分布会影响缩放参数，导致**数据泄露**（Data Leakage）

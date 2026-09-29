@@ -19,9 +19,9 @@
 
 这些信息会直接影响：
 
-- [[概念/IP 与 MAC 地址]]
-- [[概念/ARP]]
-- [[概念/DNS、HTTP 与 HTTPS#DNS Domain Name System]]
+- [[COMP30650_NETWORK/概念/IP 与 MAC 地址]]
+- [[COMP30650_NETWORK/概念/ARP]]
+- [[COMP30650_NETWORK/概念/DNS、HTTP 与 HTTPS#DNS Domain Name System]]
 
 ## 3. DORA 流程
 

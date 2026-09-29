@@ -1,5 +1,7 @@
 # Java 基础语法与输入输出
 
+^a4d0b9
+
 对应课件：
 
 - `01 - Introduction`
@@ -342,3 +344,12 @@ boolean result = (n % 2 == 0) ^ (n % 3 == 0);
 
 - `^` 和 `||` 容易混淆：`||` 是"或"，`^` 是"排他或"
 - Source: `lec_03_examples/TestLogicalOperators.java`
+
+---
+
+## 相关链接
+
+- [[COMP30820_Java/00 索引|返回索引]]
+- [[02 选择与循环]]
+- [[05 类与对象]]
+- [[10 高频易错点总表]]
